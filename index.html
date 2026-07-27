@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Raghav Gupta — Computer Engineering @ Waterloo</title>
+<meta name="description" content="Raghav Gupta — Computer Engineering student at the University of Waterloo. Embedded systems, robotics firmware, and real-time software.">
+<meta property="og:title" content="Raghav Gupta">
+<meta property="og:description" content="Computer Engineering @ University of Waterloo — embedded systems, robotics firmware, real-time software.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
+<style>
+  :root {
+    --bg: #0e1116;
+    --bg-soft: #161b22;
+    --line: #262d38;
+    --text: #e6edf3;
+    --muted: #9aa7b6;
+    --accent: #ffb454;
+    --accent-soft: rgba(255, 180, 84, .12);
+    --max: 780px;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #fbfaf8;
+      --bg-soft: #ffffff;
+      --line: #e5e1da;
+      --text: #1a1d21;
+      --muted: #5d6672;
+      --accent: #b4610c;
+      --accent-soft: rgba(180, 97, 12, .09);
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 24px 96px; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  header { padding: 72px 0 40px; }
+  h1 {
+    font-size: clamp(2.1rem, 6vw, 3rem);
+    line-height: 1.1;
+    margin: 0 0 12px;
+    letter-spacing: -0.025em;
+  }
+  .tagline { color: var(--muted); font-size: 1.08rem; margin: 0 0 8px; }
+  .tagline strong { color: var(--text); font-weight: 600; }
+  .blurb { margin: 20px 0 0; max-width: 62ch; }
+
+  .links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+  .links a {
+    display: inline-block;
+    padding: 7px 15px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: .92rem;
+    color: var(--text);
+    background: var(--bg-soft);
+    transition: border-color .15s, color .15s, background .15s;
+  }
+  .links a:hover { border-color: var(--accent); color: var(--accent); text-decoration: none; }
+  .links a.primary { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+
+  section { padding-top: 44px; }
+  h2 {
+    font-size: .78rem;
+    text-transform: uppercase;
+    letter-spacing: .13em;
+    color: var(--muted);
+    font-weight: 600;
+    margin: 0 0 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .item { margin-bottom: 30px; }
+  .item:last-child { margin-bottom: 0; }
+  .item-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 4px 16px;
+  }
+  .item h3 { font-size: 1.05rem; margin: 0; font-weight: 650; }
+  .when { color: var(--muted); font-size: .87rem; white-space: nowrap; }
+  .role { color: var(--muted); font-size: .95rem; margin: 2px 0 10px; }
+  ul.bullets { margin: 0; padding-left: 20px; }
+  ul.bullets li { margin-bottom: 6px; }
+  ul.bullets li::marker { color: var(--muted); }
+
+  .stack {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin: 0 0 10px;
+  }
+  .chip {
+    font-size: .78rem;
+    color: var(--muted);
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    padding: 2px 8px;
+    background: var(--bg-soft);
+  }
+
+  .skills dl { margin: 0; display: grid; grid-template-columns: 150px 1fr; gap: 10px 20px; }
+  .skills dt { color: var(--muted); font-size: .9rem; }
+  .skills dd { margin: 0; }
+  @media (max-width: 560px) {
+    .skills dl { grid-template-columns: 1fr; gap: 2px; }
+    .skills dd { margin-bottom: 12px; }
+  }
+
+  .plain { margin: 0; padding-left: 20px; }
+  .plain li { margin-bottom: 8px; }
+  .plain li::marker { color: var(--accent); }
+
+  footer {
+    margin-top: 60px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: .87rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    justify-content: space-between;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>Raghav Gupta</h1>
+    <p class="tagline"><strong>Computer Engineering</strong> @ University of Waterloo &middot; Class of 2030</p>
+    <p class="tagline">Embedded systems, robotics firmware, and real-time software.</p>
+    <p class="blurb">
+      I build things that run close to the hardware — swerve drive control for a Mars rover team,
+      RTOS firmware on ESP32 and STM32, and computer vision pipelines on Raspberry Pi.
+      Currently a firmware developer on the University of Waterloo Robotics Team.
+    </p>
+    <nav class="links">
+      <a class="primary" href="mailto:r237gupt@uwaterloo.ca">Email</a>
+      <a href="https://github.com/Rgupta100" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://www.linkedin.com/in/rgupta100" target="_blank" rel="noopener">LinkedIn</a>
+    </nav>
+  </header>
+
+  <section>
+    <h2>Experience</h2>
+
+    <div class="item">
+      <div class="item-head">
+        <h3>University of Waterloo Robotics Team</h3>
+        <span class="when">Jan 2026 – Present</span>
+      </div>
+      <p class="role">Firmware Developer · Waterloo, ON</p>
+      <ul class="bullets">
+        <li>Engineered a 6-wheel swerve control system in C++ and ROS 2 Humble with a custom geometric solver, improving efficiency by 20% and validating zero-scrubbing motion in Gazebo.</li>
+        <li>Designed a 5V → 3.3V linear regulation stage using an LDO to supply stable power to low-voltage CMOS logic.</li>
+        <li>Built a dual-STM32 CAN bus control system enabling remote motor speed control via HAL-based PWM firmware.</li>
+      </ul>
+    </div>
+
+    <div class="item">
+      <div class="item-head">
+        <h3>Onside AI</h3>
+        <span class="when">Jan 2026 – Mar 2026</span>
+      </div>
+      <p class="role">AI Engineering Intern · Remote</p>
+      <ul class="bullets">
+        <li>Engineered a SQLite database managing 1 GB of structured vision model data, optimizing query latency to under 5 ms for real-time interpretation logic.</li>
+        <li>Integrated SQLAlchemy ORM with a FastAPI backend to persist vision model prompts and detections as structured, queryable data.</li>
+      </ul>
+    </div>
+
+    <div class="item">
+      <div class="item-head">
+        <h3>Leaside High School</h3>
+        <span class="when">Sep 2023 – Present</span>
+      </div>
+      <p class="role">Peer Tutor · Toronto, ON</p>
+      <ul class="bullets">
+        <li>Mentored two students in math through weekly one-on-one sessions over six months, strengthening foundational problem-solving skills.</li>
+        <li>Facilitated large-scale physics exam review sessions for groups of 10+ students.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>Projects</h2>
+
+    <div class="item">
+      <h3>IoT Hydration Telemetry System</h3>
+      <div class="stack">
+        <span class="chip">ESP32</span><span class="chip">Embedded C</span><span class="chip">FreeRTOS</span><span class="chip">Firebase</span>
+      </div>
+      <ul class="bullets">
+        <li>Wi-Fi-enabled hydration tracker using an ESP32 and FreeRTOS, monitoring water volume via ultrasonic sensors within a 20 ml margin of error.</li>
+        <li>Cloud telemetry streams data to a Firebase dashboard for remote monitoring and automated hydration logging.</li>
+      </ul>
+    </div>
+
+    <div class="item">
+      <h3>Cloud-Connected Embedded Vision System</h3>
+      <div class="stack">
+        <span class="chip">Raspberry Pi</span><span class="chip">Python</span><span class="chip">OpenCV</span><span class="chip">Cloud Storage</span>
+      </div>
+      <ul class="bullets">
+        <li>Security system processing video frames for motion changes with OpenCV, uploading 1080p footage to the cloud in under 5 seconds.</li>
+      </ul>
+    </div>
+
+    <div class="item">
+      <h3>Line Following Robot</h3>
+      <div class="stack">
+        <span class="chip">PID Control</span><span class="chip">Lego EV3</span><span class="chip">Sensor Fusion</span>
+      </div>
+      <ul class="bullets">
+        <li>Built a PID line follower using EV3 reflected-light-intensity colour sensors for RoboCup.</li>
+        <li>Placed second at regionals and advanced the team to nationals.</li>
+      </ul>
+    </div>
+
+    <div class="item">
+      <h3>Real-Time Linux Performance Monitor</h3>
+      <div class="stack">
+        <span class="chip">Raspberry Pi</span><span class="chip">Python</span><span class="chip">Linux</span><span class="chip">I²C</span>
+      </div>
+      <ul class="bullets">
+        <li>Interfaced an OLED display over I²C to visualize live system metrics (IP, CPU, RAM) at 1 Hz with under 2% CPU overhead.</li>
+      </ul>
+    </div>
+
+    <div class="item">
+      <h3>Network-Wide Ad Blocker</h3>
+      <div class="stack">
+        <span class="chip">Pi-hole</span><span class="chip">Raspberry Pi</span><span class="chip">DNS</span><span class="chip">Linux</span>
+      </div>
+      <ul class="bullets">
+        <li>Self-hosted a Pi-hole DNS sinkhole on a Raspberry Pi to filter ads and trackers across every device on the home network.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="skills">
+    <h2>Skills</h2>
+    <dl>
+      <dt>Programming</dt>
+      <dd>C, C++, Embedded C, Python, Verilog, C#</dd>
+      <dt>Microcontrollers</dt>
+      <dd>STM32, ESP32 (FreeRTOS), Raspberry Pi, Pi Pico, Arduino</dd>
+      <dt>Embedded</dt>
+      <dd>RTOS, interrupts, timers, PID control, real-time scheduling, computer vision</dd>
+      <dt>Protocols</dt>
+      <dd>I²C, SPI, UART, CAN, PWM</dd>
+      <dt>Hardware</dt>
+      <dd>Oscilloscope, logic analyzer, soldering, breadboarding</dd>
+      <dt>Tools</dt>
+      <dd>Git, Docker, Linux CLI, STM32CubeIDE, ROS 2, Gazebo, SQLite, Snowflake, VS Code</dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>Awards &amp; Certifications</h2>
+    <ul class="plain">
+      <li>King Charles Award for Excellence in Community Service</li>
+      <li>Second Place, Regional World Robot Olympiad (WRO) — led team to nationals</li>
+      <li>National-level competitor &amp; team captain — RoboCup Rescue Line Junior, Space Settlement Design Competition</li>
+      <li>Fortinet Certified Fundamentals in Cybersecurity</li>
+      <li>C# Programming Certificate</li>
+    </ul>
+  </section>
+
+  <footer>
+    <span>Raghav Gupta · Waterloo, ON</span>
+    <span><a href="mailto:r237gupt@uwaterloo.ca">r237gupt@uwaterloo.ca</a></span>
+  </footer>
+
+</div>
+</body>
+</html>
