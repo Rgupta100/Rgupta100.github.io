@@ -117,6 +117,10 @@
     .skills dd { margin-bottom: 12px; }
   }
 
+  .repo { margin: 8px 0 0; font-size: .87rem; }
+  .repo a { color: var(--muted); border-bottom: 1px solid var(--line); }
+  .repo a:hover { color: var(--accent); border-color: var(--accent); text-decoration: none; }
+
   .plain { margin: 0; padding-left: 20px; }
   .plain li { margin-bottom: 8px; }
   .plain li::marker { color: var(--accent); }
@@ -142,8 +146,8 @@
     <p class="tagline"><strong>Computer Engineering</strong> @ University of Waterloo &middot; Class of 2030</p>
     <p class="tagline">Embedded systems, robotics firmware, and real-time software.</p>
     <p class="blurb">
-      I build things that run close to the hardware — swerve drive control for a Mars rover team,
-      RTOS firmware on ESP32 and STM32, and computer vision pipelines on Raspberry Pi.
+      I build things that run close to the hardware — swerve drive kinematics for a Mars rover team,
+      bare-metal firmware on ESP32 and STM32, and computer vision pipelines on Raspberry Pi.
       Currently a firmware developer on the University of Waterloo Robotics Team.
     </p>
     <nav class="links">
@@ -163,10 +167,15 @@
       </div>
       <p class="role">Firmware Developer · Waterloo, ON</p>
       <ul class="bullets">
-        <li>Engineered a 6-wheel swerve control system in C++ and ROS 2 Humble with a custom geometric solver, improving efficiency by 20% and validating zero-scrubbing motion in Gazebo.</li>
+        <li>Engineered a 6-wheel swerve drive controller in C++ on ROS 2 Humble, solving each module's steering angle and drive speed onto a common instantaneous centre of rotation, generalised to an arbitrary pivot point.</li>
         <li>Designed a 5V → 3.3V linear regulation stage using an LDO to supply stable power to low-voltage CMOS logic.</li>
-        <li>Built a dual-STM32 CAN bus control system enabling remote motor speed control via HAL-based PWM firmware.</li>
+        <li>Built a dual-STM32 CAN bus control system enabling remote motor speed control via HAL-based PWM firmware, with hardware ID filtering and interrupt-driven reception.</li>
       </ul>
+      <p class="repo">
+        <a href="https://github.com/Rgupta100/Robotics-6-wheel" target="_blank" rel="noopener">Robotics-6-wheel</a>
+        &middot;
+        <a href="https://github.com/Rgupta100/STM32-CAN-System" target="_blank" rel="noopener">STM32-CAN-System</a>
+      </p>
     </div>
 
     <div class="item">
@@ -198,24 +207,31 @@
     <h2>Projects</h2>
 
     <div class="item">
-      <h3>IoT Hydration Telemetry System</h3>
+      <h3>ESP32 Ultrasonic Telemetry</h3>
       <div class="stack">
-        <span class="chip">ESP32</span><span class="chip">Embedded C</span><span class="chip">FreeRTOS</span><span class="chip">Firebase</span>
+        <span class="chip">ESP32</span><span class="chip">Embedded C</span><span class="chip">Firebase</span><span class="chip">Wi-Fi</span>
       </div>
       <ul class="bullets">
-        <li>Wi-Fi-enabled hydration tracker using an ESP32 and FreeRTOS, monitoring water volume via ultrasonic sensors within a 20 ml margin of error.</li>
-        <li>Cloud telemetry streams data to a Firebase dashboard for remote monitoring and automated hydration logging.</li>
+        <li>Wi-Fi ultrasonic ranging on an ESP32, timing HC-SR04 echo pulses and converting them to distance, triggered by a hardware button with LED status feedback.</li>
+        <li>Streams each reading to a Firebase Realtime Database over anonymous auth for live remote monitoring.</li>
       </ul>
+      <p class="repo">
+        <a href="https://github.com/Rgupta100/ESP32-Firebase-IoT-Telemetry" target="_blank" rel="noopener">ESP32-Firebase-IoT-Telemetry</a>
+      </p>
     </div>
 
     <div class="item">
-      <h3>Cloud-Connected Embedded Vision System</h3>
+      <h3>Embedded Vision Motion Detector</h3>
       <div class="stack">
-        <span class="chip">Raspberry Pi</span><span class="chip">Python</span><span class="chip">OpenCV</span><span class="chip">Cloud Storage</span>
+        <span class="chip">Raspberry Pi</span><span class="chip">Python</span><span class="chip">OpenCV</span><span class="chip">picamera2</span>
       </div>
       <ul class="bullets">
-        <li>Security system processing video frames for motion changes with OpenCV, uploading 1080p footage to the cloud in under 5 seconds.</li>
+        <li>Headless Raspberry Pi security camera using OpenCV running-average background subtraction, capturing timestamped stills on motion with a cooldown to suppress duplicate events.</li>
+        <li>Runs over SSH with no display attached — Gaussian blur and frame differencing tuned to reject sensor noise and gradual light changes.</li>
       </ul>
+      <p class="repo">
+        <a href="https://github.com/Rgupta100/Pi-Motion-Camera" target="_blank" rel="noopener">Pi-Motion-Camera</a>
+      </p>
     </div>
 
     <div class="item">
@@ -235,8 +251,41 @@
         <span class="chip">Raspberry Pi</span><span class="chip">Python</span><span class="chip">Linux</span><span class="chip">I²C</span>
       </div>
       <ul class="bullets">
-        <li>Interfaced an OLED display over I²C to visualize live system metrics (IP, CPU, RAM) at 1 Hz with under 2% CPU overhead.</li>
+        <li>Interfaced an SSD1306 OLED over I²C to visualize six live system metrics (IP, CPU temperature and usage, RAM, disk, Wi-Fi) at 1 Hz, with threshold alarms on over- and under-temperature.</li>
+        <li>Extended it into a SQLAlchemy/SQLite logger persisting every sample with database-side timestamps, falling back to terminal output when no display is attached.</li>
       </ul>
+      <p class="repo">
+        <a href="https://github.com/Rgupta100/Pi-OLED-Dashboard" target="_blank" rel="noopener">Pi-OLED-Dashboard</a>
+        &middot;
+        <a href="https://github.com/Rgupta100/OLED_Database" target="_blank" rel="noopener">OLED_Database</a>
+      </p>
+    </div>
+
+    <div class="item">
+      <h3>Pico Beam-Break Cup Pong Tracker</h3>
+      <div class="stack">
+        <span class="chip">Pi Pico</span><span class="chip">MicroPython</span><span class="chip">Web Serial</span><span class="chip">IR Sensors</span>
+      </div>
+      <ul class="bullets">
+        <li>Automated beer-pong scoreboard: six IR beam-break sensors polled on a Raspberry Pi Pico, latched per cup so a resting ball can't double-count.</li>
+        <li>Streams events over USB serial to a browser scoreboard built on the Web Serial API — no server, driver, or install.</li>
+      </ul>
+      <p class="repo">
+        <a href="https://github.com/Rgupta100/Pi-Pico---Beam-break-sensor-game" target="_blank" rel="noopener">Pi-Pico---Beam-break-sensor-game</a>
+      </p>
+    </div>
+
+    <div class="item">
+      <h3>STM32 Peripheral Projects</h3>
+      <div class="stack">
+        <span class="chip">STM32G431</span><span class="chip">Embedded C</span><span class="chip">HAL</span><span class="chip">CubeIDE</span>
+      </div>
+      <ul class="bullets">
+        <li>Three bare-metal STM32CubeIDE projects isolating one peripheral each — timer PWM output, IR digital input, and HC-SR04 echo timing — built while learning the STM32 HAL.</li>
+      </ul>
+      <p class="repo">
+        <a href="https://github.com/Rgupta100/STM32-Learning-Projects" target="_blank" rel="noopener">STM32-Learning-Projects</a>
+      </p>
     </div>
 
     <div class="item">
@@ -256,9 +305,9 @@
       <dt>Programming</dt>
       <dd>C, C++, Embedded C, Python, Verilog, C#</dd>
       <dt>Microcontrollers</dt>
-      <dd>STM32, ESP32 (FreeRTOS), Raspberry Pi, Pi Pico, Arduino</dd>
+      <dd>STM32, ESP32, Raspberry Pi, Pi Pico, Arduino</dd>
       <dt>Embedded</dt>
-      <dd>RTOS, interrupts, timers, PID control, real-time scheduling, computer vision</dd>
+      <dd>Interrupts, timers, PWM, PID control, kinematics, computer vision</dd>
       <dt>Protocols</dt>
       <dd>I²C, SPI, UART, CAN, PWM</dd>
       <dt>Hardware</dt>
@@ -274,8 +323,8 @@
       <li>King Charles Award for Excellence in Community Service</li>
       <li>Second Place, Regional World Robot Olympiad (WRO) — led team to nationals</li>
       <li>National-level competitor &amp; team captain — RoboCup Rescue Line Junior, Space Settlement Design Competition</li>
-      <li>Fortinet Certified Fundamentals in Cybersecurity</li>
-      <li>C# Programming Certificate</li>
+      <li>Fortinet Certified Fundamentals in Cybersecurity — Dec 2025, valid to Dec 2027 (<a href="https://training.fortinet.com/admin/tool/certificate/index.php" target="_blank" rel="noopener">verify</a>, ID 4889385262RG)</li>
+      <li>Foundational C# with Microsoft — freeCodeCamp &amp; Microsoft, Dec 2025 (<a href="https://www.freecodecamp.org/certification/fcc-bf71fe54-d68a-4d60-9591-8794f4a00522/foundational-c-sharp-with-microsoft" target="_blank" rel="noopener">verify</a>)</li>
     </ul>
   </section>
 
