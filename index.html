@@ -117,6 +117,7 @@
     .skills dd { margin-bottom: 12px; }
   }
 
+  .note { color: var(--muted); font-weight: 400; font-size: .85rem; }
   .repo { margin: 8px 0 0; font-size: .87rem; }
   .repo a { color: var(--muted); border-bottom: 1px solid var(--line); }
   .repo a:hover { color: var(--accent); border-color: var(--accent); text-decoration: none; }
@@ -260,6 +261,18 @@
         &middot;
         <a href="https://github.com/Rgupta100/OLED_Database" target="_blank" rel="noopener">OLED_Database</a>
       </p>
+    </div>
+
+    <div class="item">
+      <h3>FPGA Home Energy Monitor <span class="note">— course project</span></h3>
+      <div class="stack">
+        <span class="chip">Verilog</span><span class="chip">Quartus Prime</span><span class="chip">FPGA</span><span class="chip">Digital Design</span>
+      </div>
+      <ul class="bullets">
+        <li>HVAC controller on an FPGA: a structural 4-bit magnitude comparator drives furnace, AC and blower, with door and window interlocks, a vacation-temperature mode, and a built-in self-test.</li>
+        <li>Built the comparator from truth-table Boolean equations, cascading four 1-bit comparator instances with MSB-priority logic; used parameter passing and conditional compilation to run one counter at 50&nbsp;MHz in simulation and ~3&nbsp;Hz on hardware.</li>
+      </ul>
+      <p class="repo"><em>Coursework — source not published.</em></p>
     </div>
 
     <div class="item">
