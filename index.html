@@ -1,354 +1,120 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Raghav Gupta — Computer Engineering @ Waterloo</title>
-<meta name="description" content="Raghav Gupta — Computer Engineering student at the University of Waterloo. Embedded systems, robotics firmware, and real-time software.">
-<meta property="og:title" content="Raghav Gupta">
-<meta property="og:description" content="Computer Engineering @ University of Waterloo — embedded systems, robotics firmware, real-time software.">
+<title>Raghav Gupta | AI &amp; Software Engineering</title>
+<meta name="description" content="Raghav Gupta is a Computer Engineering student at the University of Waterloo with experience in AI application backends, computer vision, and full-stack development.">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111925" media="(prefers-color-scheme: dark)">
+<meta property="og:title" content="Raghav Gupta | AI &amp; Software Engineering">
+<meta property="og:description" content="Computer Engineering at Waterloo. AI application backends, computer vision, and full-stack development.">
 <meta property="og:type" content="website">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
-<style>
-  :root {
-    --bg: #0e1116;
-    --bg-soft: #161b22;
-    --line: #262d38;
-    --text: #e6edf3;
-    --muted: #9aa7b6;
-    --accent: #ffb454;
-    --accent-soft: rgba(255, 180, 84, .12);
-    --max: 780px;
-  }
-  @media (prefers-color-scheme: light) {
-    :root {
-      --bg: #fbfaf8;
-      --bg-soft: #ffffff;
-      --line: #e5e1da;
-      --text: #1a1d21;
-      --muted: #5d6672;
-      --accent: #b4610c;
-      --accent-soft: rgba(180, 97, 12, .09);
-    }
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--text);
-    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-  }
-  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 24px 96px; }
-  a { color: var(--accent); text-decoration: none; }
-  a:hover { text-decoration: underline; }
-
-  header { padding: 72px 0 40px; }
-  h1 {
-    font-size: clamp(2.1rem, 6vw, 3rem);
-    line-height: 1.1;
-    margin: 0 0 12px;
-    letter-spacing: -0.025em;
-  }
-  .tagline { color: var(--muted); font-size: 1.08rem; margin: 0 0 8px; }
-  .tagline strong { color: var(--text); font-weight: 600; }
-  .blurb { margin: 20px 0 0; max-width: 62ch; }
-
-  .links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
-  .links a {
-    display: inline-block;
-    padding: 7px 15px;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    font-size: .92rem;
-    color: var(--text);
-    background: var(--bg-soft);
-    transition: border-color .15s, color .15s, background .15s;
-  }
-  .links a:hover { border-color: var(--accent); color: var(--accent); text-decoration: none; }
-  .links a.primary { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
-
-  section { padding-top: 44px; }
-  h2 {
-    font-size: .78rem;
-    text-transform: uppercase;
-    letter-spacing: .13em;
-    color: var(--muted);
-    font-weight: 600;
-    margin: 0 0 20px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .item { margin-bottom: 30px; }
-  .item:last-child { margin-bottom: 0; }
-  .item-head {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 4px 16px;
-  }
-  .item h3 { font-size: 1.05rem; margin: 0; font-weight: 650; }
-  .when { color: var(--muted); font-size: .87rem; white-space: nowrap; }
-  .role { color: var(--muted); font-size: .95rem; margin: 2px 0 10px; }
-  ul.bullets { margin: 0; padding-left: 20px; }
-  ul.bullets li { margin-bottom: 6px; }
-  ul.bullets li::marker { color: var(--muted); }
-
-  .stack {
-    display: flex; flex-wrap: wrap; gap: 6px;
-    margin: 0 0 10px;
-  }
-  .chip {
-    font-size: .78rem;
-    color: var(--muted);
-    border: 1px solid var(--line);
-    border-radius: 5px;
-    padding: 2px 8px;
-    background: var(--bg-soft);
-  }
-
-  .skills dl { margin: 0; display: grid; grid-template-columns: 150px 1fr; gap: 10px 20px; }
-  .skills dt { color: var(--muted); font-size: .9rem; }
-  .skills dd { margin: 0; }
-  @media (max-width: 560px) {
-    .skills dl { grid-template-columns: 1fr; gap: 2px; }
-    .skills dd { margin-bottom: 12px; }
-  }
-
-  .note { color: var(--muted); font-weight: 400; font-size: .85rem; }
-  .repo { margin: 8px 0 0; font-size: .87rem; }
-  .repo a { color: var(--muted); border-bottom: 1px solid var(--line); }
-  .repo a:hover { color: var(--accent); border-color: var(--accent); text-decoration: none; }
-
-  .plain { margin: 0; padding-left: 20px; }
-  .plain li { margin-bottom: 8px; }
-  .plain li::marker { color: var(--accent); }
-
-  footer {
-    margin-top: 60px;
-    padding-top: 22px;
-    border-top: 1px solid var(--line);
-    color: var(--muted);
-    font-size: .87rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px 20px;
-    justify-content: space-between;
-  }
-</style>
+<meta property="og:url" content="https://rgupta100.github.io/">
+<link rel="canonical" href="https://rgupta100.github.io/">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preload" href="assets/fonts/manrope-variable.ttf" as="font" type="font/ttf" crossorigin>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div class="wrap">
-
-  <header>
-    <h1>Raghav Gupta</h1>
-    <p class="tagline"><strong>Computer Engineering</strong> @ University of Waterloo &middot; Class of 2030</p>
-    <p class="tagline">Embedded systems, robotics firmware, and real-time software.</p>
-    <p class="blurb">
-      I build things that run close to the hardware — swerve drive kinematics for a Mars rover team,
-      bare-metal firmware on ESP32 and STM32, and computer vision pipelines on Raspberry Pi.
-      Currently a firmware developer on the University of Waterloo Robotics Team.
-    </p>
-    <nav class="links">
-      <a class="primary" href="mailto:r237gupt@uwaterloo.ca">Email</a>
-      <a href="https://github.com/Rgupta100" target="_blank" rel="noopener">GitHub</a>
-      <a href="https://www.linkedin.com/in/rgupta100" target="_blank" rel="noopener">LinkedIn</a>
-    </nav>
-  </header>
-
-  <section>
-    <h2>Experience</h2>
-
-    <div class="item">
-      <div class="item-head">
-        <h3>University of Waterloo Robotics Team</h3>
-        <span class="when">Jan 2026 – Present</span>
-      </div>
-      <p class="role">Firmware Developer · Waterloo, ON</p>
-      <ul class="bullets">
-        <li>Engineered a 6-wheel swerve drive controller in C++ on ROS 2 Humble, solving each module's steering angle and drive speed onto a common instantaneous centre of rotation, generalised to an arbitrary pivot point.</li>
-        <li>Cut wheel scrub by 97.5% against a fixed-heading baseline over a mixed 24-second path, measured with a rate-limited kinematic benchmark committed alongside the solver.</li>
-        <li>Designed a 5V → 3.3V linear regulation stage using an LDO to supply stable power to low-voltage CMOS logic.</li>
-        <li>Built a dual-STM32 CAN bus control system enabling remote motor speed control via HAL-based PWM firmware, with hardware ID filtering and interrupt-driven reception.</li>
-      </ul>
-      <p class="repo">
-        <a href="https://github.com/Rgupta100/Robotics-6-wheel" target="_blank" rel="noopener">Robotics-6-wheel</a>
-        &middot;
-        <a href="https://github.com/Rgupta100/STM32-CAN-System" target="_blank" rel="noopener">STM32-CAN-System</a>
-      </p>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header"><div class="container header-inner">
+  <a class="wordmark" href="#main" aria-label="Raghav Gupta, home"><span class="monogram" aria-hidden="true">rg.</span><span>Raghav Gupta</span></a>
+  <nav aria-label="Main navigation"><a href="#experience">Experience</a><a href="#projects">Projects</a><a href="#skills">Skills</a><a href="#contact">Contact</a></nav>
+</div></header>
+<main id="main" tabindex="-1">
+<section class="hero container" aria-labelledby="profile-title">
+  <div class="hero-main">
+    <h1 id="profile-title">Raghav Gupta<span>AI &amp; Software Engineering</span></h1>
+    <p class="intro">Computer Engineering student at the University of Waterloo. Experience in AI application backends, computer vision, and full-stack software development.</p>
+    <p class="print-contact">r237gupt@uwaterloo.ca · rgupta100.github.io</p>
+    <div class="hero-links">
+      <a class="button" href="mailto:r237gupt@uwaterloo.ca">Get in touch <svg aria-hidden="true" viewBox="0 0 20 20"><path d="M3 5h14v10H3zM3 5l7 6 7-6"/></svg></a>
+      <a class="text-link" href="https://github.com/Rgupta100" target="_blank" rel="noopener noreferrer">GitHub <svg aria-hidden="true" viewBox="0 0 20 20"><path d="M6 14 14 6M6 6h8v8"/></svg></a>
+      <a class="text-link" href="https://www.linkedin.com/in/rgupta100" target="_blank" rel="noopener noreferrer">LinkedIn <svg aria-hidden="true" viewBox="0 0 20 20"><path d="M6 14 14 6M6 6h8v8"/></svg></a>
     </div>
-
-    <div class="item">
-      <div class="item-head">
-        <h3>Onside AI</h3>
-        <span class="when">Jan 2026 – Mar 2026</span>
+  </div>
+  <aside class="profile-summary" aria-label="Education and availability">
+    <div><h2>University of Waterloo</h2><p>BASc, Computer Engineering<br>Co-operative Education</p><p class="small">2025–2030 · Waterloo, Ontario</p></div>
+    <div class="availability"><h2>Winter 2027 co-op</h2><p>Seeking a four-month role in AI engineering or software development.</p></div>
+  </aside>
+</section>
+<section class="section container" id="experience" aria-labelledby="experience-title">
+  <div class="section-heading"><h2 id="experience-title">Experience</h2><p>AI applications, backend systems, and full-stack development.</p></div>
+  <div class="experience-list">
+    <article class="experience-row">
+      <div class="experience-meta"><p>May–August 2026</p><p>Waterloo, ON · Remote</p></div>
+      <div class="experience-content"><h3>Software Engineering Intern</h3><p class="organization">Floating Binary Software Systems <span>(Okulo)</span></p>
+        <ul><li>Delivered 34 merged pull requests across 36 completed tickets for a multi-tenant recruiting platform.</li><li>Developed self-service onboarding, email verification, and a multi-step company setup flow.</li><li>Created shared document-layout logic for preview, PDF, and DOCX rendering; migrated five modules to server-side search and cursor pagination.</li></ul>
+        <p class="stack">TypeScript · React · Express · Firestore · Google Cloud Run</p>
       </div>
-      <p class="role">AI Engineering Intern · Remote</p>
-      <ul class="bullets">
-        <li>Engineered a SQLite database managing 1 GB of structured vision model data, optimizing query latency to under 5 ms for real-time interpretation logic.</li>
-        <li>Integrated SQLAlchemy ORM with a FastAPI backend to persist vision model prompts and detections as structured, queryable data.</li>
-      </ul>
-    </div>
-
-    <div class="item">
-      <div class="item-head">
-        <h3>Leaside High School</h3>
-        <span class="when">Sep 2023 – Present</span>
+    </article>
+    <article class="experience-row">
+      <div class="experience-meta"><p>January–March 2026</p><p>Remote</p></div>
+      <div class="experience-content"><h3>AI Engineering Intern</h3><p class="organization">Onside AI</p>
+        <ul><li>Developed the persistence layer for an internal machine-learning service using SQLAlchemy and SQLite behind a FastAPI backend.</li><li>Stored model inputs and outputs as structured, queryable records and tuned query performance for latency-sensitive reads.</li></ul>
+        <p class="stack">Python · FastAPI · SQLAlchemy · SQLite</p>
       </div>
-      <p class="role">Peer Tutor · Toronto, ON</p>
-      <ul class="bullets">
-        <li>Mentored two students in math through weekly one-on-one sessions over six months, strengthening foundational problem-solving skills.</li>
-        <li>Facilitated large-scale physics exam review sessions for groups of 10+ students.</li>
-      </ul>
-    </div>
-  </section>
-
-  <section>
-    <h2>Projects</h2>
-
-    <div class="item">
-      <h3>ESP32 Ultrasonic Telemetry</h3>
-      <div class="stack">
-        <span class="chip">ESP32</span><span class="chip">Embedded C</span><span class="chip">Firebase</span><span class="chip">Wi-Fi</span>
+    </article>
+    <article class="experience-row">
+      <div class="experience-meta"><p>March–May 2026</p><p>Remote</p></div>
+      <div class="experience-content"><h3>Software Developer</h3><p class="organization">Awksion</p>
+        <ul><li>Developed a Python scraper and two SQLite schemas to convert unstructured third-party sources into deduplicated, queryable records.</li></ul>
+        <p class="stack">Python · SQLite · Data collection</p>
       </div>
-      <ul class="bullets">
-        <li>Wi-Fi ultrasonic ranging on an ESP32, timing HC-SR04 echo pulses and converting them to distance, triggered by a hardware button with LED status feedback.</li>
-        <li>Streams each reading to a Firebase Realtime Database over anonymous auth for live remote monitoring.</li>
-      </ul>
-      <p class="repo">
-        <a href="https://github.com/Rgupta100/ESP32-Firebase-IoT-Telemetry" target="_blank" rel="noopener">ESP32-Firebase-IoT-Telemetry</a>
-      </p>
-    </div>
-
-    <div class="item">
-      <h3>Embedded Vision Motion Detector</h3>
-      <div class="stack">
-        <span class="chip">Raspberry Pi</span><span class="chip">Python</span><span class="chip">OpenCV</span><span class="chip">picamera2</span>
+    </article>
+    <article class="experience-row">
+      <div class="experience-meta"><p>July–August 2026</p><p>Concurrent placement</p></div>
+      <div class="experience-content"><h3>Web Developer</h3><p class="organization">LTL Munitions <span>· VFC Intrapreneurship Program</span></p>
+        <ul><li>Redesigned and delivered a responsive marketing website, using Claude Code for implementation and reviewing the result through three design iterations.</li><li>Researched internal workflows and scoped opportunities for automation.</li></ul>
+        <p class="stack">HTML · CSS · JavaScript · Claude Code</p>
       </div>
-      <ul class="bullets">
-        <li>Headless Raspberry Pi security camera using OpenCV running-average background subtraction, capturing timestamped stills on motion with a cooldown to suppress duplicate events.</li>
-        <li>Runs over SSH with no display attached — Gaussian blur and frame differencing tuned to reject sensor noise and gradual light changes.</li>
-      </ul>
-      <p class="repo">
-        <a href="https://github.com/Rgupta100/Pi-Motion-Camera" target="_blank" rel="noopener">Pi-Motion-Camera</a>
-      </p>
+    </article>
+  </div>
+</section>
+<section class="projects-section" id="projects" aria-labelledby="projects-title"><div class="container">
+  <div class="section-heading"><h2 id="projects-title">Selected projects</h2><p>Computer vision and applied machine learning.</p></div>
+  <article class="featured-project">
+    <div class="project-copy"><h3>Form-ulation</h3><p class="project-context">Exercise-form analysis · CXC 2026 AI Hackathon</p>
+      <p>A team project exploring real-time exercise feedback. YOLOv8 pose estimation identifies body joints, and a trained classifier uses the resulting features to distinguish good and poor exercise form.</p>
+      <p class="stack">Python · YOLOv8 · OpenCV · scikit-learn · Snowflake</p>
+      <a class="text-link" href="https://devpost.com/software/form-ulation" target="_blank" rel="noopener noreferrer">View project on Devpost <svg aria-hidden="true" viewBox="0 0 20 20"><path d="M6 14 14 6M6 6h8v8"/></svg></a>
     </div>
-
-    <div class="item">
-      <h3>Line Following Robot</h3>
-      <div class="stack">
-        <span class="chip">PID Control</span><span class="chip">Lego EV3</span><span class="chip">Sensor Fusion</span>
-      </div>
-      <ul class="bullets">
-        <li>Built a PID line follower using EV3 reflected-light-intensity colour sensors for RoboCup.</li>
-        <li>Placed second at regionals and advanced the team to nationals.</li>
-      </ul>
-    </div>
-
-    <div class="item">
-      <h3>Real-Time Linux Performance Monitor</h3>
-      <div class="stack">
-        <span class="chip">Raspberry Pi</span><span class="chip">Python</span><span class="chip">Linux</span><span class="chip">I²C</span>
-      </div>
-      <ul class="bullets">
-        <li>Interfaced an SSD1306 OLED over I²C to visualize six live system metrics (IP, CPU temperature and usage, RAM, disk, Wi-Fi) at 1 Hz, with threshold alarms on over- and under-temperature.</li>
-        <li>Extended it into a SQLAlchemy/SQLite logger persisting every sample with database-side timestamps, falling back to terminal output when no display is attached.</li>
-      </ul>
-      <p class="repo">
-        <a href="https://github.com/Rgupta100/Pi-OLED-Dashboard" target="_blank" rel="noopener">Pi-OLED-Dashboard</a>
-        &middot;
-        <a href="https://github.com/Rgupta100/OLED_Database" target="_blank" rel="noopener">OLED_Database</a>
-      </p>
-    </div>
-
-    <div class="item">
-      <h3>FPGA Home Energy Monitor <span class="note">— course project</span></h3>
-      <div class="stack">
-        <span class="chip">Verilog</span><span class="chip">Quartus Prime</span><span class="chip">FPGA</span><span class="chip">Digital Design</span>
-      </div>
-      <ul class="bullets">
-        <li>HVAC controller on an FPGA: a structural 4-bit magnitude comparator drives furnace, AC and blower, with door and window interlocks, a vacation-temperature mode, and a built-in self-test.</li>
-        <li>Built the comparator from truth-table Boolean equations, cascading four 1-bit comparator instances with MSB-priority logic; used parameter passing and conditional compilation to run one counter at 50&nbsp;MHz in simulation and ~3&nbsp;Hz on hardware.</li>
-      </ul>
-      <p class="repo"><em>Coursework — source not published.</em></p>
-    </div>
-
-    <div class="item">
-      <h3>Pico Beam-Break Cup Pong Tracker</h3>
-      <div class="stack">
-        <span class="chip">Pi Pico</span><span class="chip">MicroPython</span><span class="chip">Web Serial</span><span class="chip">IR Sensors</span>
-      </div>
-      <ul class="bullets">
-        <li>Automated beer-pong scoreboard: six IR beam-break sensors polled on a Raspberry Pi Pico, latched per cup so a resting ball can't double-count.</li>
-        <li>Streams events over USB serial to a browser scoreboard built on the Web Serial API — no server, driver, or install.</li>
-      </ul>
-      <p class="repo">
-        <a href="https://github.com/Rgupta100/Pi-Pico---Beam-break-sensor-game" target="_blank" rel="noopener">Pi-Pico---Beam-break-sensor-game</a>
-      </p>
-    </div>
-
-    <div class="item">
-      <h3>STM32 Peripheral Projects</h3>
-      <div class="stack">
-        <span class="chip">STM32G431</span><span class="chip">Embedded C</span><span class="chip">HAL</span><span class="chip">CubeIDE</span>
-      </div>
-      <ul class="bullets">
-        <li>Three bare-metal STM32CubeIDE projects isolating one peripheral each — timer PWM output, IR digital input, and HC-SR04 echo timing — built while learning the STM32 HAL.</li>
-      </ul>
-      <p class="repo">
-        <a href="https://github.com/Rgupta100/STM32-Learning-Projects" target="_blank" rel="noopener">STM32-Learning-Projects</a>
-      </p>
-    </div>
-
-    <div class="item">
-      <h3>Network-Wide Ad Blocker</h3>
-      <div class="stack">
-        <span class="chip">Pi-hole</span><span class="chip">Raspberry Pi</span><span class="chip">DNS</span><span class="chip">Linux</span>
-      </div>
-      <ul class="bullets">
-        <li>Self-hosted a Pi-hole DNS sinkhole on a Raspberry Pi to filter ads and trackers across every device on the home network.</li>
-      </ul>
-    </div>
-  </section>
-
-  <section class="skills">
-    <h2>Skills</h2>
-    <dl>
-      <dt>Programming</dt>
-      <dd>C, C++, Embedded C, Python, Verilog, C#</dd>
-      <dt>Microcontrollers</dt>
-      <dd>STM32, ESP32, Raspberry Pi, Pi Pico, Arduino</dd>
-      <dt>Embedded</dt>
-      <dd>Interrupts, timers, PWM, PID control, kinematics, computer vision</dd>
-      <dt>Protocols</dt>
-      <dd>I²C, UART, CAN, PWM, USB Serial</dd>
-      <dt>Hardware</dt>
-      <dd>Oscilloscope, logic analyzer, soldering, breadboarding</dd>
-      <dt>Tools</dt>
-      <dd>Git, Docker, Linux CLI, STM32CubeIDE, ROS 2, Gazebo, SQLite, Snowflake, VS Code</dd>
-    </dl>
-  </section>
-
-  <section>
-    <h2>Awards &amp; Certifications</h2>
-    <ul class="plain">
-      <li><strong>Winner</strong>, Claude Builder Club Hackathon — <a href="https://devpost.com/software/civicbrief" target="_blank" rel="noopener">CivicBrief</a>, AI-generated unbiased political news clips (team of 5, Mar 2026)</li>
-      <li><a href="https://devpost.com/software/form-ulation" target="_blank" rel="noopener">Form-ulation</a>, CXC 2026 AI Hackathon — real-time exercise-form coach using YOLOv8 pose estimation and a trained form classifier (Feb 2026)</li>
-      <li>King Charles Award for Excellence in Community Service</li>
-      <li>Second Place, Regional World Robot Olympiad (WRO) — led team to nationals</li>
-      <li>National-level competitor &amp; team captain — RoboCup Rescue Line Junior, Space Settlement Design Competition</li>
-      <li>Fortinet Certified Fundamentals in Cybersecurity — Dec 2025, valid to Dec 2027 (<a href="https://training.fortinet.com/admin/tool/certificate/index.php" target="_blank" rel="noopener">verify</a>, ID 4889385262RG)</li>
-      <li>Foundational C# with Microsoft — freeCodeCamp &amp; Microsoft, Dec 2025 (<a href="https://www.freecodecamp.org/certification/fcc-bf71fe54-d68a-4d60-9591-8794f4a00522/foundational-c-sharp-with-microsoft" target="_blank" rel="noopener">verify</a>)</li>
-    </ul>
-  </section>
-
-  <footer>
-    <span>Raghav Gupta · Waterloo, ON</span>
-    <span><a href="mailto:r237gupt@uwaterloo.ca">r237gupt@uwaterloo.ca</a></span>
-  </footer>
-
-</div>
+    <figure class="pipeline"><figcaption>Project approach</figcaption><ol>
+      <li><span class="pipeline-node">Video input</span><span>Exercise footage</span></li>
+      <li><span class="pipeline-node">Pose estimation</span><span>YOLOv8 joint detection</span></li>
+      <li><span class="pipeline-node">Form classification</span><span>Trained MLP classifier</span></li>
+      <li><span class="pipeline-node">Feedback</span><span>Exercise-form assessment</span></li>
+    </ol></figure>
+  </article>
+  <article class="project-row">
+    <div><h3>Computer Vision Motion Detector</h3><p class="project-context">OpenCV image processing</p></div>
+    <div><p>A headless camera application that uses running-average background subtraction to detect motion and capture timestamped images. Gaussian blur and frame differencing reduce noise, while a cooldown prevents duplicate events.</p><p class="stack">Python · OpenCV · Raspberry Pi · Linux</p><a class="text-link" href="https://github.com/Rgupta100/Pi-Motion-Camera" target="_blank" rel="noopener noreferrer">View source on GitHub <svg aria-hidden="true" viewBox="0 0 20 20"><path d="M6 14 14 6M6 6h8v8"/></svg></a></div>
+  </article>
+</div></section>
+<section class="section container" id="skills" aria-labelledby="skills-title">
+  <div class="section-heading"><h2 id="skills-title">Technical skills</h2><p>Tools used across internships and projects.</p></div>
+  <dl class="skills-list">
+    <div><dt>AI &amp; computer vision</dt><dd>OpenCV, YOLOv8, scikit-learn, LLM and agent workflows</dd></div>
+    <div><dt>Backend &amp; data</dt><dd>Python, FastAPI, SQLAlchemy, SQL, SQLite, Node.js, Express, Firestore, Snowflake</dd></div>
+    <div><dt>Frontend</dt><dd>TypeScript, JavaScript, React, HTML, CSS, Vite, TanStack Query</dd></div>
+    <div><dt>Cloud &amp; development</dt><dd>Google Cloud Run, Firebase, Docker, Git, GitHub Actions, Linux, Claude Code</dd></div>
+    <div><dt>Additional languages</dt><dd>C++, C</dd></div>
+  </dl>
+</section>
+<section class="education-section container" aria-labelledby="education-title">
+  <div class="education"><h2 id="education-title">Education</h2><h3>University of Waterloo</h3><p>BASc, Computer Engineering (Co-op)</p><p class="muted">September 2025–May 2030</p><p class="coursework">Relevant coursework includes Data Structures &amp; Algorithms and Digital Computer Systems.</p></div>
+  <div class="credentials"><h2>Certifications &amp; learning</h2><ul>
+    <li><h3>Agentic AI Foundations Associate</h3><p>Oracle Cloud Infrastructure · 2026</p></li>
+    <li><h3>Generative AI, LLMs &amp; Responsible AI</h3><p>Google Cloud courses · 2026</p></li>
+    <li><h3>Certified Fundamentals in Cybersecurity</h3><p>Fortinet · 2025, valid through 2027</p></li>
+  </ul></div>
+</section>
+<section class="contact-section" id="contact" aria-labelledby="contact-title"><div class="container contact-inner">
+  <div><h2 id="contact-title">Contact</h2><p>For AI engineering and software development opportunities.</p><a class="contact-email" href="mailto:r237gupt@uwaterloo.ca">r237gupt@uwaterloo.ca</a></div>
+  <div class="contact-socials"><a class="text-link" href="https://github.com/Rgupta100" target="_blank" rel="noopener noreferrer">GitHub <svg aria-hidden="true" viewBox="0 0 20 20"><path d="M6 14 14 6M6 6h8v8"/></svg></a><a class="text-link" href="https://www.linkedin.com/in/rgupta100" target="_blank" rel="noopener noreferrer">LinkedIn <svg aria-hidden="true" viewBox="0 0 20 20"><path d="M6 14 14 6M6 6h8v8"/></svg></a></div>
+</div></section>
+</main>
+<footer class="container"><p>Raghav Gupta</p><p>Waterloo, Ontario</p><a href="#main">Back to top</a></footer>
 </body>
 </html>

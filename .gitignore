@@ -2,3 +2,9 @@
 *.pdf
 *.png
 certificates/
+
+# local design workflow and source notes
+PRODUCT.md
+DESIGN.md
+.impeccable/
+.codex/
