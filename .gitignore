@@ -1,10 +1,10 @@
-# source material kept locally, never published
-*.pdf
-*.png
-certificates/
-
-# local design workflow and source notes
-PRODUCT.md
-DESIGN.md
-.impeccable/
-.codex/
+node_modules/
+dist/
+.astro/
+*.blend1
+.DS_Store
+test-results/
+release/
+.impeccable/review/
+.impeccable/config.json
+assets/blender/previous-*/

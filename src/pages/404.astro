@@ -1,0 +1,29 @@
+---
+import '@fontsource-variable/manrope';
+import '../styles/global.css';
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#101112" />
+    <title>Page not found | Raghav Gupta</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <main class="not-found">
+      <a class="wordmark" href="/" aria-label="Raghav Gupta, overview">rg<span>.</span></a>
+      <h1>Page not found.</h1>
+      <p>This address is unavailable. Explore the portfolio or get in touch.</p>
+      <div><a class="primary-link" href="/">Return to portfolio</a><a class="primary-link" href="/#contact">Contact</a></div>
+    </main>
+  </body>
+</html>
+<style>
+  .not-found{min-height:100svh;max-width:1000px;margin:auto;padding:12vh var(--gutter);display:flex;flex-direction:column;justify-content:center;align-items:flex-start}
+  .not-found h1{font-size:clamp(48px,7vw,88px);line-height:1.05;letter-spacing:-.04em;margin:70px 0 24px}
+  .not-found p{color:var(--muted);max-width:440px;line-height:1.75}
+  .not-found>div{display:flex;gap:32px;flex-wrap:wrap}
+</style>

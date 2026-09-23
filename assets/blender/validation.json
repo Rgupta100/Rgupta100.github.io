@@ -1,0 +1,128 @@
+{
+  "asset": "Original conceptual cryostat",
+  "blender": "5.2.1 LTS",
+  "source_reopened": true,
+  "fresh_glb_import": true,
+  "clip": "Story",
+  "duration_seconds": 8,
+  "bytes": 1594532,
+  "mesh_objects": 1105,
+  "triangles": 214356,
+  "groups": [
+    "outer_frame",
+    "middle_frame",
+    "inner_frame",
+    "core"
+  ],
+  "materials": [
+    "Amber signal",
+    "Black ceramic insulators",
+    "Copper thermal braid",
+    "Gold plated coax",
+    "Graphite processor enclosure",
+    "Machined nickel",
+    "Satin gold thermal plates"
+  ],
+  "gpu_instance_batches": 0,
+  "thermal_plates": 5,
+  "coax_lines": 128,
+  "transform_samples": 9,
+  "limits": "Conceptual illustration, not a functional cryogenic device. Local harnesses stay attached to module groups during disassembly. Transform sampling is not a collision solver.",
+  "pose_bounds": {
+    "overview": {
+      "min": [
+        -1.562000036239624,
+        -2.4149999618530273,
+        -1.562000036239624
+      ],
+      "max": [
+        1.562000036239624,
+        2.6549999713897705,
+        1.562000036239624
+      ],
+      "size": [
+        3.124000072479248,
+        5.069999933242798,
+        3.124000072479248
+      ],
+      "axes": "glTF/browser XYZ"
+    },
+    "experience": {
+      "min": [
+        -2.916701555252075,
+        -2.655066728591919,
+        -1.7531076669692993
+      ],
+      "max": [
+        2.8881187438964844,
+        2.887089490890503,
+        1.831139326095581
+      ],
+      "size": [
+        5.80482029914856,
+        5.542156219482422,
+        3.5842469930648804
+      ],
+      "axes": "glTF/browser XYZ"
+    },
+    "projects": {
+      "min": [
+        -6.915622711181641,
+        -3.1688902378082275,
+        -2.3452682495117188
+      ],
+      "max": [
+        6.66904878616333,
+        3.4774723052978516,
+        2.357733726501465
+      ],
+      "size": [
+        13.58467149734497,
+        6.646362543106079,
+        4.703001976013184
+      ],
+      "axes": "glTF/browser XYZ"
+    },
+    "skills": {
+      "min": [
+        -4.295767784118652,
+        -2.8493359088897705,
+        -2.115907907485962
+      ],
+      "max": [
+        4.190145015716553,
+        3.0754153728485107,
+        2.124483823776245
+      ],
+      "size": [
+        8.485912799835205,
+        5.924751281738281,
+        4.240391731262207
+      ],
+      "axes": "glTF/browser XYZ"
+    },
+    "contact": {
+      "min": [
+        -1.562000036239624,
+        -2.4149999618530273,
+        -1.562000036239624
+      ],
+      "max": [
+        1.562000036239624,
+        2.6549999713897705,
+        1.562000036239624
+      ],
+      "size": [
+        3.124000072479248,
+        5.069999933242798,
+        3.124000072479248
+      ],
+      "axes": "glTF/browser XYZ"
+    }
+  },
+  "overview_contact_identical_bounds": true,
+  "animated_subassemblies": 38,
+  "assembled_transform_max_error": 1.1920928955078125e-07,
+  "mesh_animation_channels": 0,
+  "choreography": "Asymmetric dispersed constellation with partial regroup"
+}

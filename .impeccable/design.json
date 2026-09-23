@@ -1,0 +1,219 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-23T05:09:36.4423046Z",
+  "title": "Design System: Raghav Gupta Portfolio",
+  "extensions": {
+    "colorMeta": {
+      "bg": {
+        "role": "neutral",
+        "displayName": "Graphite"
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Warm white"
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted warm gray"
+      },
+      "amber": {
+        "role": "primary",
+        "displayName": "Amber signal"
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Divider gray"
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Identity",
+        "purpose": "Desktop name, with responsive overrides."
+      },
+      "headline": {
+        "displayName": "Chapter headline",
+        "purpose": "Chapter headings."
+      },
+      "title": {
+        "displayName": "Evidence title",
+        "purpose": "Experience and education headings."
+      },
+      "body": {
+        "displayName": "Narrative",
+        "purpose": "Readable professional prose."
+      },
+      "label": {
+        "displayName": "Technical metadata",
+        "purpose": "Dates and technologies."
+      }
+    },
+    "motion": [
+      {
+        "name": "navigation-underline",
+        "value": "transform .25s",
+        "purpose": "Current and hovered navigation underline."
+      },
+      {
+        "name": "icon-inversion",
+        "value": "background .2s,color .2s",
+        "purpose": "Circular project action hover."
+      },
+      {
+        "name": "scene-crossfade",
+        "value": "opacity .8s",
+        "purpose": "Poster-to-WebGL transition."
+      },
+      {
+        "name": "heading-reveal",
+        "value": "0.8s expo.out",
+        "purpose": "16px heading arrival."
+      },
+      {
+        "name": "assembly-playback",
+        "purpose": "Play / Stop / Replay the eight-second Blender Story clip across 38 animated families.",
+        "value": "18s linear"
+      },
+      {
+        "name": "assembly-toggle",
+        "purpose": "Scatter 38 families into an irregular constellation or reassemble.",
+        "value": "4.8s power1.inOut"
+      },
+      {
+        "name": "camera-entrance",
+        "purpose": "Initial camera azimuth and distance reveal.",
+        "value": "1.8s cubic ease-out"
+      },
+      {
+        "value": "2.6s",
+        "purpose": "Cyan world-position sweep and temporary edge-lit inspection.",
+        "name": "surface-scan"
+      },
+      {
+        "value": "opacity .45s ease,visibility .45s",
+        "purpose": "Fade and hide inert hero copy/footer during full-viewport manual inspection.",
+        "name": "inspection-focus"
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "wide",
+        "value": "1700px"
+      },
+      {
+        "name": "intermediate",
+        "value": "1100px"
+      },
+      {
+        "name": "mobile",
+        "value": "999px"
+      },
+      {
+        "name": "compact",
+        "value": "380px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary link",
+      "kind": "button",
+      "refersTo": "primary-link",
+      "description": "Underlined chapter action.",
+      "html": "<a class=\"ds-primary\" href=\"#projects\">Explore selected work <svg viewBox=\"0 0 20 20\" aria-hidden=\"true\"><path d=\"M10 3v14m-5-5 5 5 5-5\"/></svg></a>",
+      "css": ".ds-primary{font-family:'Manrope Variable',Manrope,sans-serif;display:inline-flex;align-items:center;gap:30px;min-height:48px;padding-bottom:7px;border-bottom:1px solid #68655d;color:var(--ink);font-size:14px;text-decoration:none}.ds-primary svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}.ds-primary svg{transition:transform .25s}.ds-primary:hover svg{transform:translateY(3px)}.ds-primary:focus-visible{outline:2px solid var(--amber);outline-offset:6px}"
+    },
+    {
+      "name": "Text link",
+      "kind": "button",
+      "refersTo": "text-link",
+      "description": "External project or social action.",
+      "html": "<a class=\"ds-text\" href=\"#project\">View source on GitHub <svg viewBox=\"0 0 20 20\" aria-hidden=\"true\"><path d=\"M5 15 15 5M5 5h10v10\"/></svg></a>",
+      "css": ".ds-text{font-family:'Manrope Variable',Manrope,sans-serif;display:inline-flex;align-items:center;gap:18px;min-height:44px;font-size:14px;border-bottom:1px solid #585950;color:var(--ink);text-decoration:none}.ds-text svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}.ds-text svg{transition:transform .25s}.ds-text:hover svg{transform:translate(2px,-2px)}.ds-text:focus-visible{outline:2px solid var(--amber);outline-offset:6px}"
+    },
+    {
+      "name": "Contact link",
+      "kind": "button",
+      "refersTo": "contact-link",
+      "description": "Quiet secondary hero action.",
+      "html": "<a class=\"ds-contact\" href=\"#contact\">Get in touch <svg viewBox=\"0 0 20 20\" aria-hidden=\"true\"><path d=\"M5 15 15 5M5 5h10v10\"/></svg></a>",
+      "css": ".ds-contact{font-family:'Manrope Variable',Manrope,sans-serif;display:inline-flex;align-items:center;gap:10px;min-height:48px;padding-bottom:7px;font-size:14px;color:var(--muted);text-decoration:none}.ds-contact svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}.ds-contact svg{width:16px;height:16px}.ds-contact:hover{color:var(--ink)}.ds-contact:focus-visible{outline:2px solid var(--amber);outline-offset:6px}"
+    },
+    {
+      "name": "Circular project link",
+      "kind": "button",
+      "refersTo": "icon-link",
+      "description": "Project title action with inversion on hover.",
+      "html": "<a class=\"ds-icon\" href=\"#project\" aria-label=\"View project\"><svg viewBox=\"0 0 20 20\" aria-hidden=\"true\"><path d=\"M5 15 15 5M5 5h10v10\"/></svg></a>",
+      "css": ".ds-icon{display:flex;align-items:center;justify-content:center;width:48px;height:48px;border:1px solid #484946;border-radius:50%;color:var(--ink);transition:background .2s,color .2s}.ds-icon svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}.ds-icon:hover{background:var(--ink);color:var(--bg)}.ds-icon:focus-visible{outline:2px solid var(--amber);outline-offset:6px}"
+    },
+    {
+      "name": "Chapter navigation",
+      "kind": "nav",
+      "refersTo": "navigation-link",
+      "description": "Direct anchors with current-location emphasis.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Chapters\"><a href=\"#overview\" aria-current=\"location\">Overview</a><a href=\"#experience\">Experience</a><a href=\"#projects\">Projects</a></nav>",
+      "css": ".ds-nav{display:flex;gap:30px}.ds-nav a{font-family:'Manrope Variable',Manrope,sans-serif;position:relative;display:inline-flex;align-items:center;min-height:44px;font-size:13px;color:var(--muted);text-decoration:none}.ds-nav a:after{content:'';position:absolute;bottom:2px;left:0;width:100%;height:1px;background:var(--amber);transform:scaleX(0);transform-origin:left;transition:transform .25s}.ds-nav a:hover,.ds-nav a[aria-current=location]{color:var(--ink)}.ds-nav a:hover:after,.ds-nav a[aria-current=location]:after{transform:scaleX(1)}.ds-nav a:focus-visible{outline:2px solid var(--amber);outline-offset:6px}"
+    },
+    {
+      "name": "Workflow step",
+      "kind": "button",
+      "refersTo": "workflow-step",
+      "description": "Selected workflow control; state is set by the application.",
+      "html": "<div class=\"ds-steps\"><button type=\"button\" aria-pressed=\"true\">Video input</button><button type=\"button\" aria-pressed=\"false\">Pose estimation</button></div>",
+      "css": ".ds-steps{display:flex;gap:4px;border-bottom:1px solid var(--line)}.ds-steps button{font-family:'Manrope Variable',Manrope,sans-serif;position:relative;border:0;background:none;padding:12px 10px;min-height:44px;font-size:11px;color:var(--muted);cursor:pointer}.ds-steps button[aria-pressed=true]{color:var(--amber)}.ds-steps button[aria-pressed=true]:after{content:'';height:1px;background:var(--amber);position:absolute;bottom:-1px;left:0;right:0}.ds-steps button:focus-visible{outline:2px solid var(--amber);outline-offset:6px}"
+    },
+    {
+      "name": "Skill row",
+      "kind": "custom",
+      "description": "Open divided evidence row.",
+      "html": "<dl class=\"ds-skills\"><div><dt>Languages</dt><dd>Python · TypeScript · C++</dd></div></dl>",
+      "css": ".ds-skills{font-family:'Manrope Variable',Manrope,sans-serif;margin:0;padding:0;color:var(--ink)}.ds-skills>div{display:grid;grid-template-columns:36% 1fr;gap:22px;padding:26px 0;border-top:1px solid var(--line)}.ds-skills dt{font-size:15px;line-height:1.7}.ds-skills dd{margin:0;color:var(--muted);font-size:16px;line-height:1.8}@media(max-width:1100px){.ds-skills>div{grid-template-columns:1fr;gap:7px}}"
+    },
+    {
+      "html": "<div class=\"ds-assembly\"><button type=\"button\">Play sequence</button><button type=\"button\">Scatter parts</button><button type=\"button\" aria-pressed=\"false\">Thermal view</button><button class=\"ds-scan\" type=\"button\" aria-label=\"Scan surface\"><svg viewBox=\"0 0 20 20\" aria-hidden=\"true\"><path d=\"M3 7V3h4m6 0h4v4m0 6v4h-4m-6 0H3v-4M1 10h18\"/></svg></button></div>",
+      "css": ".ds-assembly{display:flex;justify-content:center;gap:9px}.ds-assembly button{font-family:\"Manrope Variable\",Manrope,sans-serif;min-height:44px;padding:10px 15px;border:1px solid #68655d;background:var(--bg);color:var(--ink);font-size:12px;cursor:pointer}.ds-assembly button:hover{border-color:var(--amber);color:var(--amber)}.ds-assembly button:focus-visible{outline:2px solid var(--amber);outline-offset:6px}@media(max-width:999px){.ds-assembly button{font-size:11px;padding:9px 10px}}.ds-assembly button[aria-pressed=true]{border-color:#aeb9ff;color:#d4dbff}.ds-assembly .ds-scan{padding:10px;width:44px}.ds-scan svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}@media(max-width:999px){.ds-assembly{gap:6px}}",
+      "kind": "button",
+      "refersTo": "model-control",
+      "name": "Assembly controls",
+      "description": "Play, scatter, apply illustrative thermal colors, or scan; application code handles inspection mode, labels, pressed state, and return to reading."
+    }
+  ],
+  "narrative": {
+    "northStar": "Dark precision studio",
+    "overview": "The approved studio world lands as a continuous graphite surface, warm-white Manrope typography, restrained amber signals, and an original quantum-computer-inspired cryostat sculpture with five gold/copper plates, nickel-colored cables, silver hardware and a graphite processor enclosure. The interface is open and spare; fine rules organize professional evidence without enclosing it in cards.\n\nPhysical depth belongs to the sculpture. Text remains ordinary semantic HTML above it, with native anchors connecting the five chapters. Typography and content remain useful when the interactive scene is unavailable.",
+    "keyCharacteristics": [
+      "Continuous dark surface and generous space.",
+      "Warm typography with compact technical metadata.",
+      "Fine dividers and restrained amber states.",
+      "Sculptural depth with a flat interface."
+    ],
+    "rules": [
+      {
+        "name": "The Signal Rule",
+        "body": "Amber identifies small signals and interactive emphasis; the reading surface stays graphite.",
+        "section": "colors"
+      },
+      {
+        "name": "The Evidence Type Rule",
+        "body": "Use Manrope for readable narrative and IBM Plex Mono for compact technical metadata.",
+        "section": "typography"
+      },
+      {
+        "name": "The Sculptural Depth Rule",
+        "body": "Keep interface surfaces flat; let the original sculpture carry material depth.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do keep the continuous graphite surface and warm readable text.",
+      "Do use amber for small signals, selected states, and visible keyboard focus.",
+      "Do use real text and native anchors independently of the sculpture.",
+      "Do preserve still-image and reduced-motion paths when extending the scene."
+    ],
+    "donts": [
+      "Don't introduce interface drop shadows as a substitute for sculptural depth.",
+      "Don't turn the open evidence lists into a generic card grid.",
+      "Don't require motion or WebGL to read the portfolio or reach its links."
+    ]
+  }
+}
