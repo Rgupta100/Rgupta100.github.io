@@ -3,6 +3,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { pcActiveChapter, pcChapters, pcStoryProgress, type StoryMarker } from './pc-story';
 import type { PCLighting, PCScene, PCSceneState } from './pc-scene';
 import { installCircuitEffects } from './pc-circuit-effects';
+import { installProjectPanels } from './pc-project-panels';
 
 gsap.registerPlugin(ScrollTrigger);
 const root = document.documentElement;
@@ -15,6 +16,7 @@ const view = document.querySelector<HTMLSelectElement>('#pc-view')!;
 const play = document.querySelector<HTMLButtonElement>('#pc-play')!;
 const fans = document.querySelector<HTMLButtonElement>('#pc-fans')!;
 const lighting = document.querySelector<HTMLSelectElement>('#pc-lighting')!;
+const glass = document.querySelector<HTMLButtonElement>('#pc-glass')!;
 const returnButton = document.querySelector<HTMLButtonElement>('#pc-return')!;
 const motionButton = document.querySelector<HTMLButtonElement>('#pc-motion')!;
 const status = document.querySelector<HTMLElement>('#pc-control-status')!;
@@ -23,7 +25,7 @@ const desktop = matchMedia('(min-width: 1000px)');
 const fine = matchMedia('(hover: hover) and (pointer: fine)');
 const sections = pcChapters.map(id => document.getElementById(id)!);
 const markerElements = [...document.querySelectorAll<HTMLElement>('[data-story]')];
-const state: PCSceneState = {progress: 0, inspection: false, lighting: 'rgb', fanOverride: true};
+const state: PCSceneState = {progress: 0, inspection: false, lighting: 'rgb', fanOverride: true, glassClear: false};
 let userOff = false;
 try { userOff = localStorage.getItem('portfolio-motion') === 'off'; } catch { /* Storage is optional. */ }
 let scene: PCScene | undefined;
@@ -89,6 +91,7 @@ function sync(immediate = true) {
   }
   const active = pcActiveChapter(scrollY, tops, innerHeight);
   if (active !== previousChapter) {
+    if (previousChapter >= 0 && motionEnabled()) scene?.sendPackets();
     previousChapter = active; root.dataset.pcChapter = pcChapters[active]; syncPoster(active);
     document.querySelectorAll<HTMLAnchorElement>('[data-nav-chapter]').forEach(link => {
       if (link.hash === `#${pcChapters[active]}`) link.setAttribute('aria-current', 'location');
@@ -180,6 +183,12 @@ fans.addEventListener('click', () => {
   renderState(); status.textContent = state.fanOverride ? 'Fans running while the computer is visible.' : 'Fans slowing to a stop.';
 });
 lighting.addEventListener('change', () => { state.lighting = lighting.value as PCLighting; renderState(); });
+glass.addEventListener('click', () => {
+  state.glassClear = !state.glassClear;
+  glass.querySelector('small')!.textContent = state.glassClear ? 'Glass is clear' : 'Clear the glass';
+  glass.setAttribute('aria-pressed', String(state.glassClear));
+  renderState(); status.textContent = state.glassClear ? 'Glass clearing to reveal internal components.' : 'Tinted glass restored.';
+});
 returnButton.addEventListener('click', () => { returnToReading(); explore.querySelector('summary')?.focus({preventScroll: true}); });
 motionButton.addEventListener('click', () => {
   if (reduced.matches) return;
@@ -231,4 +240,5 @@ document.querySelectorAll<HTMLElement>('[data-diagram]').forEach(diagram => {
 });
 
 installCircuitEffects();
+installProjectPanels();
 measure(); configure();

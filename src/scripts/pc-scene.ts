@@ -6,12 +6,13 @@ import { loadPCAsset } from './pc-asset';
 import { pcRippleEnvelope } from './pc-ripple';
 
 export type PCLighting = 'rgb' | 'studio' | 'off';
-export type PCSceneState = { progress: number; inspection: boolean; lighting: PCLighting; fanOverride: boolean | null };
+export type PCSceneState = { progress: number; inspection: boolean; lighting: PCLighting; fanOverride: boolean | null; glassClear: boolean };
 export type PCScene = {
   setState(state: PCSceneState): void;
   resize(): void;
   setVisible(visible: boolean): void;
   burst(): void;
+  sendPackets(): void;
   dispose(): void;
 };
 
@@ -77,7 +78,7 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
   groundLight.position.set(-.6, .9, .35); groundLight.target.position.set(-.25, 0, .1);
   scene.add(groundLight, groundLight.target);
 
-  let state: PCSceneState = {progress: 0, inspection: false, lighting: 'rgb', fanOverride: null};
+  let state: PCSceneState = {progress: 0, inspection: false, lighting: 'rgb', fanOverride: null, glassClear: false};
   let model: THREE.Group | undefined;
   let mixer: THREE.AnimationMixer | undefined, action: THREE.AnimationAction | undefined;
   let duration = 16, frame = 0, disposed = false, visible = true, last = 0, elapsed = 0, frames = 0;
@@ -86,6 +87,11 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
   let peakDrawCalls = 0, peakTriangles = 0, renderTotalMs = 0, renderPeakMs = 0;
   const rotors: {object: THREE.Object3D; axis: THREE.Vector3; base: THREE.Quaternion; speed: number}[] = [];
   const leds: {material: THREE.MeshStandardMaterial; color: THREE.Color; emissive: THREE.Color; intensity: number; cpu: boolean}[] = [];
+  const glassMaterials: {material: THREE.MeshStandardMaterial; opacity: number}[] = [];
+  let glassAmount = 0;
+  const packetClock = {value: -1};
+  let packetStarted = -Infinity;
+  let packetCount = 0;
   const rotorRotation = new THREE.Quaternion();
   const target = new THREE.Vector3();
   const inspectionBounds = new THREE.Box3(), inspectionCenter = new THREE.Vector3();
@@ -98,7 +104,7 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
   const rippleBounds = new THREE.Box3(), rippleCenter = new THREE.Vector3(), rippleSample = new THREE.Vector3();
   let rippleStarted = -Infinity, rippleCount = 0, ripplePart = '';
   let press: {x: number; y: number; scroll: number} | undefined;
-  const blockedTarget = (target: EventTarget | null) => target instanceof Element && !!target.closest('a,button,select,summary,input,textarea,#pc-controls');
+  const blockedTarget = (target: EventTarget | null) => target instanceof Element && !!target.closest('a,button,select,summary,input,textarea,dialog,#pc-controls');
   function pointerDown(event: PointerEvent) {
     press = event.isPrimary && event.button === 0 && !blockedTarget(event.target)
       ? {x: event.clientX, y: event.clientY, scroll: window.scrollY} : undefined;
@@ -131,10 +137,7 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
     for (const [material, distance] of rippleDistances) rippleDistances.set(material, distance / farthest);
     rippleStarted = elapsed; rippleCount++; ripplePart = part.name; request();
   }
-  type HoverSurface = {material: THREE.MeshStandardMaterial; emissive: THREE.Color; intensity: number};
-  type HoverPart = {name: string; label: string; object: THREE.Object3D; wrapper: THREE.Group; center: THREE.Vector3; amount: number; surfaces: HoverSurface[]};
-  const replacedMaterials = new Set<THREE.Material>();
-  const hoverTint = new THREE.Color('#39dbe8').multiplyScalar(.14);
+  type HoverPart = {name: string; label: string; object: THREE.Object3D; wrapper: THREE.Group; center: THREE.Vector3; amount: number};
   const partLabel = document.createElement('span');
   partLabel.id = 'pc-part-label'; partLabel.setAttribute('aria-hidden', 'true'); partLabel.hidden = true;
   document.body.append(partLabel);
@@ -145,22 +148,10 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
   const hoverBounds = new THREE.Box3();
   let hoveredPart: HoverPart | undefined;
   function clearHover() { hoveredPart = undefined; partLabel.hidden = true; request(); }
-  function paintHover(part: HoverPart) {
-    for (const surface of part.surfaces) {
-      if (part.amount === 0) {
-        surface.material.emissive.copy(surface.emissive);
-        surface.material.emissiveIntensity = surface.intensity;
-      } else {
-        // Interpolate emitted energy itself so the highlight never flares mid-transition.
-        surface.material.emissive.copy(surface.emissive).multiplyScalar(surface.intensity).lerp(hoverTint, part.amount);
-        surface.material.emissiveIntensity = 1;
-      }
-    }
-  }
   function resetHoverPose() {
     hoveredPart = undefined; partLabel.hidden = true;
     for (const part of hoverParts) {
-      part.amount = 0; part.wrapper.scale.setScalar(1); part.wrapper.position.set(0, 0, 0); paintHover(part);
+      part.amount = 0; part.wrapper.scale.setScalar(1); part.wrapper.position.set(0, 0, 0);
     }
   }
   function updateHoverCenters() {
@@ -174,7 +165,7 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
   function pointerMove(event: PointerEvent) {
     // Embedded browsers can report coarse/no-hover media despite receiving real mouse events.
     if (!['mouse', 'pen'].includes(event.pointerType) || !visible || document.hidden || disposed || poseDirty
-      || (event.target instanceof Element && event.target.closest('a,button,select,summary,#pc-controls'))) { clearHover(); return; }
+      || (event.target instanceof Element && event.target.closest('a,button,select,summary,dialog,#pc-controls'))) { clearHover(); return; }
     const rect = canvas.getBoundingClientRect();
     if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) { clearHover(); return; }
     pointer.set((event.clientX - rect.left) / rect.width * 2 - 1, -(event.clientY - rect.top) / rect.height * 2 + 1);
@@ -200,7 +191,6 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
       const scale = 1 + .08 * part.amount;
       part.wrapper.scale.setScalar(scale);
       part.wrapper.position.copy(part.center).multiplyScalar(1 - scale);
-      paintHover(part);
       moving ||= part.amount !== goal;
     }
     return moving;
@@ -282,7 +272,7 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
       } else {
         const offset = material.name === 'led_top_rail' ? 1 / 3 : material.name === 'led_gpu_edge' ? 2 / 3 : index * .09;
         shade.copy(lightColor(offset));
-        material.color.copy(shade).multiplyScalar(material.name === 'led_case_diffuse' ? .09 : .24);
+        material.color.copy(shade).multiplyScalar(.24);
         material.emissive.copy(shade); material.emissiveIntensity = intensity * 1.4;
       }
       if (state.lighting === 'rgb') {
@@ -307,11 +297,20 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
     if (fanSpeed < .001) fanSpeed = 0;
     fanPhase += dt * fanSpeed;
     applyLighting();
+    const packetAge = elapsed - packetStarted;
+    packetClock.value = state.lighting !== 'off' && packetAge < 3.6 ? packetAge : -1;
+    canvas.dataset.packetBursts = String(packetCount);
+    canvas.dataset.packetsActive = String(packetClock.value >= 0);
     for (const rotor of rotors) {
       rotorRotation.setFromAxisAngle(rotor.axis, fanPhase * rotor.speed);
       rotor.object.quaternion.copy(rotor.base).multiply(rotorRotation);
     }
     const hoverMoving = animateHover(dt);
+    const glassGoal = state.glassClear ? 1 : 0;
+    glassAmount += (glassGoal - glassAmount) * (1 - Math.exp(-dt * 12));
+    if (Math.abs(glassGoal - glassAmount) < .001) glassAmount = glassGoal;
+    const glassMoving = glassAmount !== glassGoal;
+    for (const {material, opacity} of glassMaterials) material.opacity = opacity + (Math.min(.035, opacity) - opacity) * glassAmount;
     if (hoverMoving) renderer.shadowMap.needsUpdate = true;
     const renderStart = diagnostic ? performance.now() : 0;
     try { renderer.render(scene, camera); }
@@ -339,6 +338,8 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
       canvas.dataset.elapsed = elapsed.toFixed(2);
       canvas.dataset.lighting = state.lighting;
       canvas.dataset.ledColors = leds.map(({material}) => `${material.name}:${material.emissive.getHexString()}:${material.emissiveIntensity.toFixed(2)}`).join(',');
+      canvas.dataset.glassClear = String(state.glassClear);
+      canvas.dataset.glassOpacity = glassMaterials.map(({material}) => `${material.name}:${material.opacity.toFixed(4)}`).join(',');
       canvas.dataset.rippleProgress = Number.isFinite(rippleStarted) ? clamp((elapsed - rippleStarted) / 2).toFixed(3) : '0';
       canvas.dataset.rippleCount = String(rippleCount);
       canvas.dataset.ripplePart = ripplePart;
@@ -348,7 +349,7 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
     }
     canvas.dataset.rendered = 'true';
     if (frames === 1) canvas.dispatchEvent(new CustomEvent('pc-rendered'));
-    if (requested || fanSpeed > 0 || hoverMoving || (state.lighting === 'rgb' && elapsed - rippleStarted < 2)) request();
+    if (requested || fanSpeed > 0 || hoverMoving || glassMoving || packetClock.value >= 0 || (state.lighting === 'rgb' && elapsed - rippleStarted < 2)) request();
     else if (state.lighting === 'rgb') {
       // Color alone needs twelve samples/second, not a continuously busy RAF.
       lightTimer = setTimeout(() => { lightTimer = undefined; request(); }, 1000 / 12);
@@ -386,7 +387,6 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
         for (const item of Object.values(material)) if (item instanceof THREE.Texture) textures.add(item);
       }
     });
-    replacedMaterials.forEach(material => materials.add(material));
     geometries.forEach(geometry => geometry.dispose()); materials.forEach(material => material.dispose());
     textures.forEach(texture => { texture.dispose(); if (typeof ImageBitmap !== 'undefined' && texture.image instanceof ImageBitmap) texture.image.close(); });
     environment.dispose(); key.shadow.dispose(); renderer.dispose();
@@ -420,7 +420,6 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
     if (!clip) throw new Error('PC asset is missing Story');
     duration = clip.duration;
     const seen = new Set<THREE.Material>();
-    let caseFanDiffuse: THREE.MeshStandardMaterial | undefined;
     model.traverse(object => {
       if (object instanceof THREE.Camera || object instanceof THREE.Light) object.visible = false;
       if (object.name.startsWith('fan_rotor_')) {
@@ -428,22 +427,6 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
         rotors.push({object, axis: new THREE.Vector3().fromArray(axis).normalize(), base: object.quaternion.clone(), speed: Number(object.userData.angular_speed_rad_s) || 10});
       }
       if (!(object instanceof THREE.Mesh)) return;
-      let assembly: THREE.Object3D | null = object.parent;
-      while (assembly && !assembly.name.startsWith('fan_rotor_')) assembly = assembly.parent;
-      const caseRotor = assembly && !assembly.name.startsWith('fan_rotor_gpu_');
-      if (caseRotor) {
-        const diffuseFan = (material: THREE.Material) => {
-          if (!(material instanceof THREE.MeshStandardMaterial) || material.name !== 'fan_polymer') return material;
-          if (!caseFanDiffuse) {
-            caseFanDiffuse = material.clone(); caseFanDiffuse.name = 'led_case_diffuse';
-            caseFanDiffuse.color.set('#5d6870'); caseFanDiffuse.metalness = 0;
-            caseFanDiffuse.roughness = .62; caseFanDiffuse.envMapIntensity = .3;
-            caseFanDiffuse.emissive.set('#e6edf1'); caseFanDiffuse.emissiveIntensity = .12;
-          }
-          return caseFanDiffuse;
-        };
-        object.material = Array.isArray(object.material) ? object.material.map(diffuseFan) : diffuseFan(object.material);
-      }
       const materials = Array.isArray(object.material) ? object.material : [object.material];
       const transparentGlazing = materials.every(material => material.transparent && /glass|glazing/i.test(material.name));
       // glTF batches retain their material semantics even when mesh names change.
@@ -452,6 +435,7 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
       for (const material of materials) {
         if (!(material instanceof THREE.MeshStandardMaterial) || seen.has(material)) continue;
         seen.add(material);
+        if (material.transparent && /glass|glazing/i.test(material.name)) glassMaterials.push({material, opacity: material.opacity});
         switch (material.name) {
           case 'painted_black_steel':
             material.color.set('#101215'); material.metalness = .25; material.roughness = .52; material.envMapIntensity = .28; break;
@@ -476,6 +460,41 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
         if (material.name.startsWith('led_')) leds.push({material, color: material.color.clone(), emissive: material.emissive.clone(), intensity: material.emissiveIntensity, cpu: /cpu|status/.test(material.name)});
       }
     });
+    // Follow the four authored 45-degree bus corridors in the PCB texture.
+    // Clone only the board material, so GPU/memory soldermask stays untouched.
+    const board = model.getObjectByName('mainboard_pcb');
+    if (board instanceof THREE.Mesh && board.material instanceof THREE.MeshStandardMaterial) {
+      const material = board.material.clone();
+      board.material = material;
+      material.onBeforeCompile = shader => {
+        shader.uniforms.uPacketAge = packetClock;
+        shader.fragmentShader = 'uniform float uPacketAge;\n' + shader.fragmentShader;
+        shader.fragmentShader = shader.fragmentShader.replace('#include <emissivemap_fragment>', `
+          #include <emissivemap_fragment>
+          #ifdef USE_MAP
+          if (uPacketAge >= 0.0) {
+            vec2 pixel = vec2(vMapUv.x, 1.0 - vMapUv.y) * 2048.0;
+            float energy = 0.0;
+            for (int bank = 0; bank < 4; bank++) {
+              for (int lane = 0; lane < 3; lane++) {
+                float x0 = 160.0 + float(bank) * 440.0 + float(lane * 7) * 7.0;
+                float y0 = 190.0 + float(bank) * 330.0;
+                float travel = (uPacketAge - float(bank) * 0.16 - float(lane) * 0.12) / 2.6;
+                float x = pixel.x - x0;
+                float route = y0 + min(x, 100.0);
+                float line = 1.0 - smoothstep(1.5, 4.0, abs(pixel.y - route));
+                float head = 1.0 - smoothstep(3.0, 24.0, abs(x - travel * 370.0));
+                float gate = step(0.0, travel) * step(travel, 1.0) * step(0.0, x) * step(x, 370.0);
+                energy += line * head * gate;
+              }
+            }
+            totalEmissiveRadiance += vec3(1.0, 0.58, 0.18) * energy * 4.0;
+          }
+          #endif
+        `);
+      };
+      material.customProgramCacheKey = () => 'motherboard-data-packets-v1';
+    }
     // Identity wrappers leave authored node transforms and Story bindings intact.
     // GPU layers are separate targets in the exploded pose; no target wraps another.
     const semanticParts = /^(cpu_block|radiator|motherboard|ram_group|psu|gpu_(backplate|heatsink|pcb|shroud)_group|fan_housing_(front_\d|top_\d|rear))$/;
@@ -491,22 +510,12 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
         gpu_heatsink_group: 'GPU heatsink', gpu_pcb_group: 'GPU circuit board', gpu_shroud_group: 'GPU fans & shroud',
       };
       const label = labels[object.name] ?? (object.name.includes('front') ? 'Front cooling fan' : object.name.includes('top') ? 'Top cooling fan' : 'Rear cooling fan');
-      const part: HoverPart = {name: object.name, label, object, wrapper, center: new THREE.Vector3(), amount: 0, surfaces: []};
-      const clonedMaterials = new Map<THREE.Material, THREE.Material>();
-      const hoverMaterial = (original: THREE.Material) => {
-        if (!(original instanceof THREE.MeshStandardMaterial) || /^led_|glass|glazing/i.test(original.name)) return original;
-        const existing = clonedMaterials.get(original); if (existing) return existing;
-        const material = original.clone();
-        clonedMaterials.set(original, material); replacedMaterials.add(original);
-        part.surfaces.push({material, emissive: material.emissive.clone(), intensity: material.emissiveIntensity});
-        return material;
-      };
+      const part: HoverPart = {name: object.name, label, object, wrapper, center: new THREE.Vector3(), amount: 0};
       hoverParts.push(part);
       object.traverse(child => {
         if (!(child instanceof THREE.Mesh)) return;
         const materials = Array.isArray(child.material) ? child.material : [child.material];
         if (materials.every(material => material.transparent && /glass|glazing/i.test(material.name))) return;
-        child.material = Array.isArray(child.material) ? child.material.map(hoverMaterial) : hoverMaterial(child.material);
         meshParts.set(child, part);
       });
     }
@@ -529,6 +538,10 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
     resize,
     setVisible(next) { if (!next) { press = undefined; rippleStarted = -Infinity; resetHoverPose(); } visible = next; last = 0; if (!visible) { cancelAnimationFrame(frame); frame = 0; clearTimeout(lightTimer); lightTimer = undefined; } else request(); },
     burst() { request(); },
+    sendPackets() {
+      if (!visible || document.hidden || disposed || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      packetStarted = elapsed; packetCount++; request();
+    },
     dispose,
   };
 }

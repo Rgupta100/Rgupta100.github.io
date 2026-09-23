@@ -1,0 +1,22 @@
+.pc-project-open{display:block;min-height:44px;margin-top:20px;padding:10px 16px;border:1px solid var(--amber);background:#17191b;color:var(--ink);font-size:14px;text-align:left}
+.pc-project-open:hover{background:#252522}
+html.pc-panel-open{overflow:hidden}
+.pc-project-panel{width:min(900px,calc(100vw - 40px));max-width:none;max-height:calc(100dvh - 48px);padding:0;margin:auto;color:var(--ink);background:#17191b;border:1px solid #656963;box-shadow:0 28px 90px #0008;overflow:hidden}
+.pc-project-panel::backdrop{background:#080a0cb8}
+.pc-project-panel[open]{display:flex;flex-direction:column;animation:pc-panel-arrive .24s ease-out}
+.pc-panel-bar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 22px;border-bottom:1px solid var(--line);font:12px/1.4 'IBM Plex Mono',monospace;color:var(--muted);background:#202427}
+.pc-panel-close{display:flex;align-items:center;gap:18px;min-height:44px;padding:8px 12px;border:0;background:transparent;font-size:14px;color:var(--ink)}
+.pc-panel-close svg{width:20px;height:20px}
+.pc-panel-switcher{display:flex;gap:0;border-bottom:1px solid var(--line);padding:0 22px;flex-shrink:0}
+.pc-panel-switcher button{min-height:48px;padding:12px 16px;border:0;border-bottom:2px solid transparent;background:transparent;text-align:left;font-size:13px;color:var(--muted)}
+.pc-panel-switcher button[aria-pressed=true]{border-bottom-color:var(--amber);color:var(--ink)}
+.pc-panel-content{padding:30px;overflow:auto;overscroll-behavior:contain}
+.pc-panel-content h2{font-size:clamp(26px,4vw,42px);line-height:1.12;letter-spacing:-.025em;margin-bottom:18px}
+.pc-panel-project>p{font-size:16px;line-height:1.65;max-width:68ch;margin-bottom:16px}
+.pc-panel-project>.project-context,.pc-panel-project>.stack{font-size:12px;color:var(--muted)}
+.pc-panel-project .diagram{margin:26px 0}
+.pc-panel-project .text-link{min-height:44px}
+@keyframes pc-panel-arrive{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:600px){.pc-project-panel{width:calc(100vw - 20px);max-height:calc(100dvh - 20px)}.pc-panel-bar{padding:8px 14px}.pc-panel-switcher{padding:0 6px}.pc-panel-switcher button{flex:1;font-size:12px;padding:12px 9px}.pc-panel-content{padding:22px 18px}.pc-panel-project .diagram-controls{flex-wrap:wrap}}
+@media(prefers-reduced-motion:reduce){.pc-project-panel[open]{animation:none}}
+html[data-pc-motion=off] .pc-project-panel[open]{animation:none}
