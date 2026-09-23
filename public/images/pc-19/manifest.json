@@ -1,0 +1,226 @@
+{
+  "native_alpha": true,
+  "padding_fraction": 0.06,
+  "images": {
+    "overview-desktop.webp": {
+      "width": 791,
+      "height": 891,
+      "bytes": 64870,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "source": "source-overview-alpha-0.png",
+      "source_alpha_bounds": [
+        206,
+        93,
+        911,
+        888
+      ],
+      "crop": [
+        163,
+        45,
+        954,
+        936
+      ]
+    },
+    "overview-mobile.webp": {
+      "width": 780,
+      "height": 879,
+      "bytes": 75018,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "source": "source-overview-alpha-0.png",
+      "source_alpha_bounds": [
+        206,
+        93,
+        911,
+        888
+      ],
+      "crop": [
+        163,
+        45,
+        954,
+        936
+      ]
+    },
+    "experience-desktop.webp": {
+      "width": 1081,
+      "height": 669,
+      "bytes": 100586,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "source": "source-experience-alpha-120.png",
+      "source_alpha_bounds": [
+        105,
+        218,
+        1070,
+        815
+      ],
+      "crop": [
+        47,
+        182,
+        1128,
+        851
+      ]
+    },
+    "experience-mobile.webp": {
+      "width": 780,
+      "height": 483,
+      "bytes": 72418,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "source": "source-experience-alpha-120.png",
+      "source_alpha_bounds": [
+        105,
+        218,
+        1070,
+        815
+      ],
+      "crop": [
+        47,
+        182,
+        1128,
+        851
+      ]
+    },
+    "projects-desktop.webp": {
+      "width": 1206,
+      "height": 734,
+      "bytes": 82510,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "source": "source-projects-alpha-240.png",
+      "source_alpha_bounds": [
+        24,
+        177,
+        1100,
+        831
+      ],
+      "crop": [
+        -41,
+        137,
+        1165,
+        871
+      ]
+    },
+    "projects-mobile.webp": {
+      "width": 780,
+      "height": 475,
+      "bytes": 55732,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "source": "source-projects-alpha-240.png",
+      "source_alpha_bounds": [
+        24,
+        177,
+        1100,
+        831
+      ],
+      "crop": [
+        -41,
+        137,
+        1165,
+        871
+      ]
+    },
+    "skills-desktop.webp": {
+      "width": 1232,
+      "height": 1029,
+      "bytes": 71374,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "source": "source-skills-alpha-360.png",
+      "source_alpha_bounds": [
+        0,
+        0,
+        1100,
+        917
+      ],
+      "crop": [
+        -66,
+        -56,
+        1166,
+        973
+      ]
+    },
+    "skills-mobile.webp": {
+      "width": 780,
+      "height": 651,
+      "bytes": 46092,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "source": "source-skills-alpha-360.png",
+      "source_alpha_bounds": [
+        0,
+        0,
+        1100,
+        917
+      ],
+      "crop": [
+        -66,
+        -56,
+        1166,
+        973
+      ]
+    },
+    "contact-desktop.webp": {
+      "width": 791,
+      "height": 891,
+      "bytes": 64870,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "source": "source-contact-alpha-480.png",
+      "source_alpha_bounds": [
+        206,
+        93,
+        911,
+        888
+      ],
+      "crop": [
+        163,
+        45,
+        954,
+        936
+      ]
+    },
+    "contact-mobile.webp": {
+      "width": 780,
+      "height": 879,
+      "bytes": 75018,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "source": "source-contact-alpha-480.png",
+      "source_alpha_bounds": [
+        206,
+        93,
+        911,
+        888
+      ],
+      "crop": [
+        163,
+        45,
+        954,
+        936
+      ]
+    }
+  }
+}
