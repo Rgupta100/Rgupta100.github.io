@@ -344,9 +344,9 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
     if (Math.abs(glassGoal - glassAmount) < .001) glassAmount = glassGoal;
     const glassMoving = glassAmount !== glassGoal;
     for (const material of glassMaterials) {
-      // Keep the transmitted RGB image intact: clarity changes diffusion only.
-      // Alpha-fading a transmissive material also fades its captured scene colour.
-      material.roughness = .015 + .72 * (1 - glassAmount) ** .8;
+      material.roughness = .04 + (1 - glassAmount) * .76;
+      material.transmission = .98;
+      material.opacity = 1 - .94 * glassAmount ** 3;
     }
     if (hoverMoving) renderer.shadowMap.needsUpdate = true;
     const renderStart = diagnostic ? performance.now() : 0;
@@ -504,8 +504,8 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
       const convert = (source: THREE.Material) => {
         if (source.name !== 'smoked_glass') return source;
         if (!glazing.has(source)) {
-          const material = new THREE.MeshPhysicalMaterial({color: '#ffffff', roughness: .015,
-            metalness: 0, transmission: 1, thickness: .008, ior: 1.45, envMapIntensity: .18,
+          const material = new THREE.MeshPhysicalMaterial({color: '#e2e6e5', roughness: .04,
+            metalness: 0, transmission: .98, thickness: .012, ior: 1.45,
             transparent: true, opacity: 1, depthWrite: false, side: THREE.DoubleSide});
           material.name = source.name; glazing.set(source, material); glassMaterials.push(material);
         }
