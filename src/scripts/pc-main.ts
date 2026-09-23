@@ -184,7 +184,7 @@ fans.addEventListener('click', () => {
 });
 lighting.addEventListener('change', () => { state.lighting = lighting.value as PCLighting; renderState(); });
 glass.addEventListener('input', () => {
-  state.glassClarity = Number(glass.value) / 100;
+  state.glassClarity = .2 + .8 * Number(glass.value) / 100;
   document.querySelector('#pc-glass-value')!.textContent = `${glass.value}% clear`;
   glass.setAttribute('aria-valuetext', `${glass.value} percent clear`);
   renderState();
