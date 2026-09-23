@@ -1,13 +1,11 @@
-# Approved direction
+# Current direction
 
-Experience portfolio; dark precision studio. The user's approved implementation plan is the authority over randomized alternatives.
+Dark precision studio with a central, original orbital sculpture. The latest user revision supersedes the earlier nested-frame and cryostat concepts. Graphite, titanium silver, warm white and narrow amber accents remain.
 
-FIRST VIEWPORT: large Manrope Raghav / Gupta at left, professional subtitle and concise introduction below; original quantum-computer-inspired cryostat sculpture occupies right half. Stacked gold/copper thermal stages, nickel edges, organized cable routing and a graphite lower processor enclosure replace the rejected nested frames. Near-black continuous surface, warm-white text, thin amber signal. Header brand and direct navigation. Open composition without cards. Mobile stacks identity above the sculpture.
+The opening places oversized Raghav at upper left and outlined Gupta at lower right, surrounding the live object. Professional focus and introduction sit left, actions right. Subsequent chapters alternate heading and evidence columns around the sculpture. Mobile stacks identity, sculpture and reading content.
 
-SIGNATURE: one persistent sculpture scrubs through assembled, turned, separated, aligned, reassembled chapter poses as native document scroll progresses. Cursor traces fade; click sends a single amber signal. Text remains real HTML.
+The asymmetric model has a diagonal C-shaped yoke, unequal swept armor fins, split rotor and faceted core. It is conceptual artwork, not a claim of hardware design experience. No thermal effect or repeated cooling plates remain. Separation and reassembly are deliberate, with resting poses during reading.
 
-QUALITY BAR: Oryzo's material lighting and deliberate scale; Sheehan Lloyd's immediately available project evidence and chapter navigation. Do not reuse either site's assets.
+Asset interface: public/models/portfolio.glb, Story clip, chapter times 0/2/4/6/8. Stable roots outer_frame, middle_frame, inner_frame, core. Fallbacks under public/images; editable Blender source and evidence under assets/blender; reproducible Python under scripts.
 
-Asset interface: public/models/portfolio.glb, clip Story, 0/2/4/6/8 seconds chapter times. Object groups outer_frame, middle_frame, inner_frame, core. Fallbacks public/images/{overview,experience,projects,skills,contact}-{desktop,mobile}.webp. Blender source under assets/blender; Python builder under scripts.
-
-The user's subsequent request for a more advanced quantum-computer-like hero supersedes the original frame model in the concept board. Preserve the page composition; actual sculpture assets must be Blender-authored. Reviewer checks material character, structured complexity, silhouette and content clearance. Five chapter poses and fallback images are required. This is conceptual artwork, not a claim of quantum hardware design experience.
+Reference qualities: Oryzo's scale and material lighting; Sheehan Lloyd's direct access to project evidence. No reference assets or code are reused. The original concept board records an earlier direction; current Blender renders and browser composition are authoritative.

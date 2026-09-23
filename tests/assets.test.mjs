@@ -19,6 +19,10 @@ test('the actual GLB contains the five-chapter animation and stable moving group
   }
   const end=Math.max(...json.animations[0].samplers.map(s=>json.accessors[s.input].max[0]));
   assert.equal(end,8);
+  const meshNodes=json.nodes.filter(n=>n.mesh!==undefined);
+  const triangles=meshNodes.reduce((total,node)=>total+json.meshes[node.mesh].primitives.reduce((sum,p)=>sum+json.accessors[p.indices??p.attributes.POSITION].count/3,0),0);
+  assert.ok(meshNodes.length<=70,'hero must stay within its mesh submission budget');
+  assert.ok(triangles<45000,'hero must stay within its geometry budget');
 });
 
 test('every chapter has both fallback sizes and the hero stays within budget',()=>{

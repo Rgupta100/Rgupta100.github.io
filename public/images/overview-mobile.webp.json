@@ -1,4 +1,4 @@
 {
-  "prompt": "Original Blender 5.2.1 render produced by scripts/build_sculpture.py from assets/blender/portfolio.blend. Quantum-computer-inspired conceptual cryostat sculpture: five machined gold/copper stages, nickel rims, routed cable bundles, connector hardware and a dark processor enclosure. Chapter pose named by this filename; Cycles render, transparent background. Original procedural geometry authored for this project.",
-  "createdAt": "2026-09-22T22:06:07.4497831Z"
+  "prompt": "Original Blender render produced by scripts/build_sculpture.py from assets/blender/portfolio.blend. Original asymmetric orbital sculpture: titanium C-shaped yoke, unequal swept armor fins, split rotor and suspended faceted core with amber aperture. Chapter pose named by this filename; transparent background. Procedural geometry authored for this project.",
+  "createdAt": "2026-09-23"
 }

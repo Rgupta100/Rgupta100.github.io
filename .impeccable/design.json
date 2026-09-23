@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-23T05:09:36.4423046Z",
+  "generatedAt": "2026-09-23T05:48:49.4246183Z",
   "title": "Design System: Raghav Gupta Portfolio",
   "extensions": {
     "colorMeta": {
@@ -14,7 +14,7 @@
       },
       "muted": {
         "role": "neutral",
-        "displayName": "Muted warm gray"
+        "displayName": "Muted gray"
       },
       "amber": {
         "role": "primary",
@@ -70,23 +70,18 @@
       },
       {
         "name": "assembly-playback",
-        "purpose": "Play / Stop / Replay the eight-second Blender Story clip across 38 animated families.",
-        "value": "18s linear"
+        "purpose": "Play / Stop / Replay the orbital Story clip across 14 subassemblies.",
+        "value": "32s linear"
       },
       {
         "name": "assembly-toggle",
-        "purpose": "Scatter 38 families into an irregular constellation or reassemble.",
-        "value": "4.8s power1.inOut"
+        "purpose": "Scatter or reassemble the orbital sculpture.",
+        "value": "9s power1.inOut"
       },
       {
         "name": "camera-entrance",
         "purpose": "Initial camera azimuth and distance reveal.",
-        "value": "1.8s cubic ease-out"
-      },
-      {
-        "value": "2.6s",
-        "purpose": "Cyan world-position sweep and temporary edge-lit inspection.",
-        "name": "surface-scan"
+        "value": "4.2s cubic ease-out"
       },
       {
         "value": "opacity .45s ease,visibility .45s",
@@ -96,20 +91,20 @@
     ],
     "breakpoints": [
       {
-        "name": "wide",
-        "value": "1700px"
+        "value": "1700px",
+        "name": "wide"
       },
       {
-        "name": "intermediate",
-        "value": "1100px"
+        "value": "1000px–1199px",
+        "name": "orbital-intermediate"
       },
       {
-        "name": "mobile",
-        "value": "999px"
+        "value": "999px",
+        "name": "mobile"
       },
       {
-        "name": "compact",
-        "value": "380px"
+        "value": "380px",
+        "name": "compact"
       }
     ]
   },
@@ -120,7 +115,7 @@
       "refersTo": "primary-link",
       "description": "Underlined chapter action.",
       "html": "<a class=\"ds-primary\" href=\"#projects\">Explore selected work <svg viewBox=\"0 0 20 20\" aria-hidden=\"true\"><path d=\"M10 3v14m-5-5 5 5 5-5\"/></svg></a>",
-      "css": ".ds-primary{font-family:'Manrope Variable',Manrope,sans-serif;display:inline-flex;align-items:center;gap:30px;min-height:48px;padding-bottom:7px;border-bottom:1px solid #68655d;color:var(--ink);font-size:14px;text-decoration:none}.ds-primary svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}.ds-primary svg{transition:transform .25s}.ds-primary:hover svg{transform:translateY(3px)}.ds-primary:focus-visible{outline:2px solid var(--amber);outline-offset:6px}"
+      "css": ".ds-primary{font-family:'Manrope Variable',Manrope,sans-serif;display:inline-flex;align-items:center;gap:30px;min-height:48px;padding-bottom:7px;border-bottom:1px solid #68655d;color:var(--ink);font-size:12px;text-decoration:none}.ds-primary svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}.ds-primary svg{transition:transform .25s}.ds-primary:hover svg{transform:translateY(3px)}.ds-primary:focus-visible{outline:2px solid var(--amber);outline-offset:6px}"
     },
     {
       "name": "Text link",
@@ -136,7 +131,7 @@
       "refersTo": "contact-link",
       "description": "Quiet secondary hero action.",
       "html": "<a class=\"ds-contact\" href=\"#contact\">Get in touch <svg viewBox=\"0 0 20 20\" aria-hidden=\"true\"><path d=\"M5 15 15 5M5 5h10v10\"/></svg></a>",
-      "css": ".ds-contact{font-family:'Manrope Variable',Manrope,sans-serif;display:inline-flex;align-items:center;gap:10px;min-height:48px;padding-bottom:7px;font-size:14px;color:var(--muted);text-decoration:none}.ds-contact svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}.ds-contact svg{width:16px;height:16px}.ds-contact:hover{color:var(--ink)}.ds-contact:focus-visible{outline:2px solid var(--amber);outline-offset:6px}"
+      "css": ".ds-contact{font-family:'Manrope Variable',Manrope,sans-serif;display:inline-flex;align-items:center;gap:10px;min-height:48px;padding-bottom:7px;font-size:12px;color:var(--muted);text-decoration:none}.ds-contact svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}.ds-contact svg{width:16px;height:16px}.ds-contact:hover{color:var(--ink)}.ds-contact:focus-visible{outline:2px solid var(--amber);outline-offset:6px}"
     },
     {
       "name": "Circular project link",
@@ -144,7 +139,7 @@
       "refersTo": "icon-link",
       "description": "Project title action with inversion on hover.",
       "html": "<a class=\"ds-icon\" href=\"#project\" aria-label=\"View project\"><svg viewBox=\"0 0 20 20\" aria-hidden=\"true\"><path d=\"M5 15 15 5M5 5h10v10\"/></svg></a>",
-      "css": ".ds-icon{display:flex;align-items:center;justify-content:center;width:48px;height:48px;border:1px solid #484946;border-radius:50%;color:var(--ink);transition:background .2s,color .2s}.ds-icon svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}.ds-icon:hover{background:var(--ink);color:var(--bg)}.ds-icon:focus-visible{outline:2px solid var(--amber);outline-offset:6px}"
+      "css": ".ds-icon{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border:1px solid #484946;border-radius:50%;color:var(--ink);transition:background .2s,color .2s}.ds-icon svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}.ds-icon:hover{background:var(--ink);color:var(--bg)}.ds-icon:focus-visible{outline:2px solid var(--amber);outline-offset:6px}"
     },
     {
       "name": "Chapter navigation",
@@ -160,32 +155,32 @@
       "refersTo": "workflow-step",
       "description": "Selected workflow control; state is set by the application.",
       "html": "<div class=\"ds-steps\"><button type=\"button\" aria-pressed=\"true\">Video input</button><button type=\"button\" aria-pressed=\"false\">Pose estimation</button></div>",
-      "css": ".ds-steps{display:flex;gap:4px;border-bottom:1px solid var(--line)}.ds-steps button{font-family:'Manrope Variable',Manrope,sans-serif;position:relative;border:0;background:none;padding:12px 10px;min-height:44px;font-size:11px;color:var(--muted);cursor:pointer}.ds-steps button[aria-pressed=true]{color:var(--amber)}.ds-steps button[aria-pressed=true]:after{content:'';height:1px;background:var(--amber);position:absolute;bottom:-1px;left:0;right:0}.ds-steps button:focus-visible{outline:2px solid var(--amber);outline-offset:6px}"
+      "css": ".ds-steps{display:flex;gap:0;border-bottom:1px solid var(--line)}.ds-steps button{font-family:'Manrope Variable',Manrope,sans-serif;position:relative;border:0;background:none;padding:12px 7px;min-height:44px;font-size:10px;color:var(--muted);cursor:pointer}.ds-steps button[aria-pressed=true]{color:var(--amber)}.ds-steps button[aria-pressed=true]:after{content:'';height:1px;background:var(--amber);position:absolute;bottom:-1px;left:0;right:0}.ds-steps button:focus-visible{outline:2px solid var(--amber);outline-offset:6px}"
     },
     {
       "name": "Skill row",
       "kind": "custom",
       "description": "Open divided evidence row.",
       "html": "<dl class=\"ds-skills\"><div><dt>Languages</dt><dd>Python · TypeScript · C++</dd></div></dl>",
-      "css": ".ds-skills{font-family:'Manrope Variable',Manrope,sans-serif;margin:0;padding:0;color:var(--ink)}.ds-skills>div{display:grid;grid-template-columns:36% 1fr;gap:22px;padding:26px 0;border-top:1px solid var(--line)}.ds-skills dt{font-size:15px;line-height:1.7}.ds-skills dd{margin:0;color:var(--muted);font-size:16px;line-height:1.8}@media(max-width:1100px){.ds-skills>div{grid-template-columns:1fr;gap:7px}}"
+      "css": ".ds-skills{font-family:\"Manrope Variable\",Manrope,sans-serif;margin:0;padding:0;color:var(--ink)}.ds-skills>div{display:grid;grid-template-columns:1fr;gap:10px;padding:26px 0;border-top:1px solid var(--line)}.ds-skills dt{font-size:19px;line-height:1.7}.ds-skills dd{margin:0;color:var(--muted);font-size:15px;line-height:1.85}@media(max-width:999px){.ds-skills>div{padding:22px 0}.ds-skills dd{font-size:16px}}"
     },
     {
-      "html": "<div class=\"ds-assembly\"><button type=\"button\">Play sequence</button><button type=\"button\">Scatter parts</button><button type=\"button\" aria-pressed=\"false\">Thermal view</button><button class=\"ds-scan\" type=\"button\" aria-label=\"Scan surface\"><svg viewBox=\"0 0 20 20\" aria-hidden=\"true\"><path d=\"M3 7V3h4m6 0h4v4m0 6v4h-4m-6 0H3v-4M1 10h18\"/></svg></button></div>",
-      "css": ".ds-assembly{display:flex;justify-content:center;gap:9px}.ds-assembly button{font-family:\"Manrope Variable\",Manrope,sans-serif;min-height:44px;padding:10px 15px;border:1px solid #68655d;background:var(--bg);color:var(--ink);font-size:12px;cursor:pointer}.ds-assembly button:hover{border-color:var(--amber);color:var(--amber)}.ds-assembly button:focus-visible{outline:2px solid var(--amber);outline-offset:6px}@media(max-width:999px){.ds-assembly button{font-size:11px;padding:9px 10px}}.ds-assembly button[aria-pressed=true]{border-color:#aeb9ff;color:#d4dbff}.ds-assembly .ds-scan{padding:10px;width:44px}.ds-scan svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}@media(max-width:999px){.ds-assembly{gap:6px}}",
+      "html": "<div class=\"ds-assembly\"><button type=\"button\">Play sequence</button><button type=\"button\">Scatter parts</button></div>",
+      "css": ".ds-assembly{display:flex;justify-content:center;gap:9px}.ds-assembly button{font-family:\"Manrope Variable\",Manrope,sans-serif;min-height:44px;padding:10px 15px;border:1px solid #414b51;background:var(--bg);color:var(--ink);font-size:11px;cursor:pointer}.ds-assembly button:hover{border-color:var(--amber);color:var(--amber)}.ds-assembly button:focus-visible{outline:2px solid var(--amber);outline-offset:6px}@media(max-width:999px){.ds-assembly{gap:6px}.ds-assembly button{padding:9px 10px}}",
       "kind": "button",
       "refersTo": "model-control",
       "name": "Assembly controls",
-      "description": "Play, scatter, apply illustrative thermal colors, or scan; application code handles inspection mode, labels, pressed state, and return to reading."
+      "description": "Play or scatter the orbital sculpture; application code handles inspection mode and return to reading."
     }
   ],
   "narrative": {
     "northStar": "Dark precision studio",
-    "overview": "The approved studio world lands as a continuous graphite surface, warm-white Manrope typography, restrained amber signals, and an original quantum-computer-inspired cryostat sculpture with five gold/copper plates, nickel-colored cables, silver hardware and a graphite processor enclosure. The interface is open and spare; fine rules organize professional evidence without enclosing it in cards.\n\nPhysical depth belongs to the sculpture. Text remains ordinary semantic HTML above it, with native anchors connecting the five chapters. Typography and content remain useful when the interactive scene is unavailable.",
+    "overview": "A centered orbital sculpture anchors the continuous graphite surface. Swept silver fins, interrupted arcs, dark inset surfaces, and a suspended faceted core provide the material character. Asymmetrical filled and outlined identity typography and alternating side columns frame the sculpture.\r\n\r\nProfessional evidence remains semantic HTML with native chapter anchors. Fine rules organize open articles; still images preserve the composition when interactive graphics are unavailable.",
     "keyCharacteristics": [
-      "Continuous dark surface and generous space.",
-      "Warm typography with compact technical metadata.",
-      "Fine dividers and restrained amber states.",
-      "Sculptural depth with a flat interface."
+      "Centered orbital sculpture and generous negative space.",
+      "Asymmetrical filled and outlined Manrope identity.",
+      "Alternating evidence columns with technical mono metadata.",
+      "Restrained amber states and a flat interface."
     ],
     "rules": [
       {

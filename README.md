@@ -22,7 +22,7 @@ See `docs/blender.md` for the exact reproduction command and source file. The or
 
 ## Final delivery
 
-The complete website includes Overview, Experience, Selected Projects, Technical Background, and Contact. The approved quantum-inspired sculpture is authored in Blender and loaded as real geometry. Scatter parts opens an asymmetric full-width inspection; Play sequence combines thermal, surface scan, scattered parts, and reassembly over 18 seconds. The thermal colors are illustrative.
+The complete website includes Overview, Experience, Selected Projects, Technical Background, and Contact. The original asymmetric orbital sculpture is authored in Blender and loaded as real geometry at the center of the composition. Scatter parts expands its 14 assemblies over nine seconds; Play sequence moves through separation and reassembly over 32 seconds. Thermal and surface-scan effects have been removed.
 
 A local deployment archive can be generated from `dist/` after `npm run build`. The delivered workspace includes `release/portfolio-site.zip`; this generated archive is excluded from Git. The static build includes the missing-page route, search metadata, assets, fonts, and license notices. Editable website and Blender sources remain in this repository. See `docs/validation.md` for measured checks and limitations.
 
@@ -46,4 +46,3 @@ Manrope and IBM Plex Mono are self-hosted through Fontsource; their license file
 ## Review limits
 
 Biographical claims are preserved from the user's existing public site, not independently certified. Verify co-op availability before publication. Automated performance budgets cover file sizes; real-device frame performance and network speed vary.
-

@@ -1,0 +1,82 @@
+/* The sculpture is the fixed center; the document passes around it. */
+:root{--bg:#0d1012;--ink:#f1eee7;--muted:#b6b9bb;--line:#2b3236}
+body{background:var(--bg)}
+.site-header{background:linear-gradient(#0d1012 20%,#0d1012d9 65%,#0d101200)}
+#scene-poster{left:50%;width:min(65vw,83vh);height:min(65vw,83vh)}
+.hero{min-height:105svh;padding-top:0;display:block}
+.hero-copy{width:auto;max-width:none}
+.hero h1{font-size:clamp(86px,9vw,142px);font-weight:450;line-height:.93;letter-spacing:-.04em}
+.name-first{position:absolute;top:14vh;left:var(--gutter)}
+.name-last{position:absolute;top:62vh;right:var(--gutter);font-weight:350;color:transparent;-webkit-text-stroke:1px #d8dad8}
+.name-period{-webkit-text-stroke:0;color:var(--amber)}
+.hero-focus{position:absolute;top:49vh;left:var(--gutter);width:23%;font-size:clamp(21px,2vw,30px);font-weight:500;line-height:1.25;margin:0;max-width:12ch}
+.hero-intro{position:absolute;top:61vh;left:var(--gutter);width:23%;font-size:14px;line-height:1.85;margin:0;max-width:29ch}
+.hero-actions{position:absolute;top:82vh;right:var(--gutter);gap:20px;justify-content:flex-end}
+.hero-actions a{font-size:12px;margin:0}
+.hero-footer{position:absolute;bottom:30px;left:var(--gutter);right:var(--gutter);margin:0;padding-top:20px;background:none}
+.hero-departing .hero-footer .location{position:static;text-align:right}
+#model-controls{left:50%;top:85vh}
+#model-controls p{font-size:10px}
+#model-controls button{font-size:11px;border-color:#414b51;background:#0d1012}
+#model-drag{left:30%;right:30%;top:15vh;bottom:24vh}
+.chapter{padding:220px var(--gutter) 160px;min-height:120vh}
+.chapter-heading{position:absolute;top:220px;left:var(--gutter);width:25%;max-width:380px}
+.chapter-heading h2{font-size:clamp(42px,4.6vw,72px);font-weight:450;line-height:1.04;letter-spacing:-.04em}
+.chapter-heading .section-intro{font-size:15px;max-width:25ch;margin-top:28px;line-height:1.8}
+.chapter-content{margin-left:66%;width:34%;max-width:520px}
+#projects .chapter-heading{left:auto;right:var(--gutter);width:27%}
+#projects .chapter-content{margin-left:0}
+.experience-entry{padding:32px 0 56px}
+.experience-entry h3{font-size:clamp(24px,2.25vw,35px);line-height:1.17;font-weight:450}
+.entry-meta{display:block;font-size:10px;margin-bottom:24px}
+.entry-meta p{font-size:10px}.entry-meta p+p{margin-top:4px}
+.organization{font-size:14px;margin-top:14px}
+.experience-entry li,.project>p:not(.stack),.skills-list dd{font-size:15px;line-height:1.85}
+.stack{font-size:10px;line-height:2.1}
+.project h3{font-size:clamp(29px,3vw,46px);font-weight:450;line-height:1.1}
+.project-context{font-size:12px!important}
+.project-title{gap:16px}.icon-link{width:40px;height:40px;flex-shrink:0}
+.diagram-header{font-size:9px}.diagram-header span:last-child{display:none}
+.diagram-controls{gap:0}.diagram-controls button{font-size:10px;padding:12px 7px}
+.diagram-panels p{font-size:14px}
+.skills-list>div{grid-template-columns:1fr;gap:10px}
+.skills-list dt{font-size:19px;color:var(--ink)}
+.contact{display:block;min-height:105vh;padding-bottom:180px}
+.contact .chapter-content{margin-left:66%;width:34%;padding-top:0}
+.contact-email{font-size:clamp(17px,1.7vw,26px)}
+.contact-availability{font-size:15px}.social-links{gap:24px}
+.model-focused #model-controls{top:auto;bottom:26px}
+.model-focused #model-drag{inset:100px 0 150px}
+@media(min-width:1700px){.chapter-content{margin-left:66%}}
+@media(min-width:1000px) and (max-width:1199px){
+ .hero h1{font-size:10vw}.hero-intro{font-size:13px;width:25%}.hero-focus{font-size:23px}
+ .chapter-content{margin-left:65%;width:35%}.chapter-heading{width:27%}
+ .chapter-heading h2{font-size:45px}.contact .chapter-content{margin-left:63%;width:37%}
+}
+@media(max-width:999px){
+ .hero{min-height:1150px;padding:120px var(--gutter) 32px}
+ .hero h1{font-size:clamp(70px,12vw,110px);line-height:.95;position:relative}
+ .name-first,.name-last{position:static;display:block}.name-last{text-align:right;margin-top:8px}
+ .hero-focus{position:static;max-width:none;width:auto;margin-top:25px;font-size:20px}
+ #scene-stage{top:350px;height:460px}#scene-canvas{height:440px}#scene-poster{left:0;width:100%;height:100%;transform:none}
+ .hero-intro{position:static;width:auto;max-width:38ch;font-size:15px;margin-top:535px}
+ .hero-actions{position:static;justify-content:flex-start;margin-top:24px;gap:24px}
+ .hero-footer{position:static;padding-top:24px;margin-top:36px;display:block}.location{display:none}
+ #model-controls{top:780px;left:50%}#model-drag{top:360px;left:0;right:0;bottom:auto;height:420px}
+ .chapter{padding:60px var(--gutter) 90px;min-height:0}
+ .chapter-heading,#projects .chapter-heading{position:static;width:auto;max-width:none}
+ .chapter-heading h2{font-size:clamp(46px,9vw,66px)}
+ .chapter-heading .section-intro{font-size:16px;max-width:32ch;margin:24px 0 44px}
+ .chapter-content,#projects .chapter-content,.contact .chapter-content{margin-left:0;width:auto;max-width:none}
+ .mobile-chapter-image{height:280px;margin-bottom:40px}
+ .experience-entry h3{font-size:29px}.project h3{font-size:35px}
+ .experience-entry li,.project>p:not(.stack),.skills-list dd{font-size:16px}
+ .diagram-panels p{font-size:15px}.contact-email{font-size:clamp(19px,5.3vw,30px)}
+ .contact{padding-bottom:90px;min-height:0}
+ .model-focused #scene-stage{top:0;height:100svh}.model-focused #scene-canvas{height:100%}
+ .model-focused #model-controls{top:auto;bottom:20px}.model-focused #model-drag{inset:90px 0 150px;height:auto}
+}
+@media(prefers-reduced-motion:reduce){.hero-copy,.hero-footer{transition:none}}
+@media print{.chapter-heading{position:static;width:auto}.chapter-content{margin:0;width:auto}.hero h1 span,.hero-focus,.hero-intro,.hero-actions,.hero-footer{position:static}.name-last{color:black;-webkit-text-stroke:0}.hero-intro{margin-top:20px}}
+
+html:not([data-chapter="overview"]) .hero-footer{visibility:hidden}

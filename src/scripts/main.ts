@@ -15,9 +15,7 @@ const explode=document.querySelector<HTMLButtonElement>('#model-explode');
 const play=document.querySelector<HTMLButtonElement>('#model-play');
 const modelControls=document.querySelector<HTMLElement>('#model-controls');
 const drag=document.querySelector<HTMLElement>('#model-drag');
-const thermal=document.querySelector<HTMLButtonElement>('#model-thermal');
 const returnModel=document.querySelector<HTMLButtonElement>('#model-return');
-let thermalOn=false;
 let playing=false;
 let manualPose:{value:number}|undefined;
 let exploded=false;
@@ -35,7 +33,6 @@ function focusModel(active:boolean){
   requestAnimationFrame(()=>sculpture?.resize());
   if(returnModel)returnModel.hidden=!active;
   sculpture?.focus(active);
-  if(!active){thermalOn=false;thermal?.setAttribute('aria-pressed','false');sculpture?.thermal(null);}
 }
 function returnToReading(){
   stopPlayback();manualPose=undefined;exploded=false;
@@ -43,11 +40,6 @@ function returnToReading(){
   focusModel(false);update();
 }
 returnModel?.addEventListener('click',returnToReading);
-thermal?.addEventListener('click',()=>{
-  thermalOn=thermal.getAttribute('aria-pressed')!=='true';thermal.setAttribute('aria-pressed',String(thermalOn));
-  sculpture?.thermal(thermalOn);
-});
-document.querySelector('#model-scan')?.addEventListener('click',()=>sculpture?.pulse());
 const enabled=()=>!reduced.matches&&!userOff;
 function syncMotionLabel(){
   document.documentElement.dataset.motion=enabled()?'on':'off';
@@ -68,9 +60,9 @@ function update(){
       if(selected)a.setAttribute('aria-current','location');else a.removeAttribute('aria-current');
     });
     const poster=stage?.querySelector('img');
-    if(poster)poster.src=`/images/${desktop.matches?chapters[active]:'overview'}-desktop.webp`;
+    if(poster)poster.src=`/images/${desktop.matches?chapters[active]:'overview'}-desktop.webp?v=orbital-v2`;
     const source=stage?.querySelector('source');
-    if(source)source.srcset='/images/overview-mobile.webp';
+    if(source)source.srcset='/images/overview-mobile.webp?v=orbital-v2';
   }
   sculpture?.seek(manualPose?.value??progress,progress);
   if(sculpture&&enabled()&&progress>=3.99&&!contactPulsed){contactPulsed=true;sculpture.pulse();}
@@ -106,14 +98,14 @@ explode?.addEventListener('click',()=>{
   stopPlayback();manualPose??={value:progress};exploded=!exploded;
   explode.textContent=exploded?'Reassemble':'Scatter parts';
   if(exploded)focusModel(true);
-  assemblyTween=gsap.to(manualPose,{value:exploded?2:0,duration:4.8,ease:'power1.inOut',onUpdate:update,onComplete:()=>{if(!exploded)focusModel(false);}});
+  assemblyTween=gsap.to(manualPose,{value:exploded?2:0,duration:9,ease:'power1.inOut',onUpdate:update,onComplete:()=>{if(!exploded)focusModel(false);}});
 });
 play?.addEventListener('click',()=>{
   if(!sculpture||!enabled())return;
   if(playing){stopPlayback();play.textContent='Replay sequence';return;}
   stopPlayback();playing=true;play.textContent='Stop sequence';exploded=false;if(explode)explode.textContent='Scatter parts';
-  manualPose={value:0};thermalOn=false;thermal?.setAttribute('aria-pressed','false');focusModel(true);sculpture.thermal(null);update();
-  assemblyTween=gsap.to(manualPose,{value:4,duration:18,ease:'none',onUpdate:update,onComplete:()=>{playing=false;play.textContent='Replay sequence';focusModel(false);}});
+  manualPose={value:0};focusModel(true);update();
+  assemblyTween=gsap.to(manualPose,{value:4,duration:32,ease:'none',onUpdate:update,onComplete:()=>{playing=false;play.textContent='Replay sequence';focusModel(false);}});
 });
 let dragPoint:{x:number;y:number;id:number}|undefined;
 drag?.addEventListener('pointerdown',event=>{if(!sculpture||event.pointerType==='touch')return;dragPoint={x:event.clientX,y:event.clientY,id:event.pointerId};drag.setPointerCapture(event.pointerId);drag.classList.add('is-dragging');});
@@ -179,12 +171,12 @@ document.addEventListener('pointermove',e=>{
   const target=e.target instanceof Element?e.target:null;
   if(target?.closest('a,button,p,h1,h2,h3,li,dd,dt'))return;
   const now=performance.now();if(now-lastPoint>24){points.push({x:e.clientX,y:e.clientY,t:now});lastPoint=now;startTrace();}
-  if(chapter===0&&e.clientX>innerWidth*.48)sculpture?.point((e.clientX/innerWidth-.5)*2,(.5-e.clientY/innerHeight)*2);
+  if(chapter===0&&e.clientX>innerWidth*.28&&e.clientX<innerWidth*.72)sculpture?.point((e.clientX/innerWidth-.5)*2,(.5-e.clientY/innerHeight)*2);
 },{passive:true});
 document.addEventListener('pointerdown',e=>{
   if(!enabled()||!fine.matches||(e.target instanceof Element&&e.target.closest('a,button,input,summary')))return;
   rings.push({x:e.clientX,y:e.clientY,t:performance.now()});startTrace();
-  if(chapter===0&&e.clientX>innerWidth*.48)sculpture?.pulse();
+  if(chapter===0&&e.clientX>innerWidth*.28&&e.clientX<innerWidth*.72)sculpture?.pulse();
 },{passive:true});
 
 

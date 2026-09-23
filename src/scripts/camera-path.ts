@@ -2,11 +2,11 @@ import { clamp, smooth } from './story.ts';
 
 // The camera changes both elevation and azimuth, revealing the sides and underside.
 const shots = [
-  { yaw: .48, pitch: .23, distance: 12.4 },
-  { yaw: 1.12, pitch: .10, distance: 12.8 },
-  { yaw: .22, pitch: .20, distance: 19.5 },
-  { yaw: -.58, pitch: .49, distance: 14.6 },
-  { yaw: .48, pitch: .23, distance: 12.4 },
+  { yaw: .55, pitch: .30, distance: 11.8 },
+  { yaw: .52, pitch: .12, distance: 12.3 },
+  { yaw: .10, pitch: .20, distance: 18 },
+  { yaw: -.62, pitch: .30, distance: 13.4 },
+  { yaw: .55, pitch: .30, distance: 11.8 },
 ];
 export function cameraPose(progress: number) {
   const p=clamp(progress,0,4), i=Math.min(3,Math.floor(p)), t=smooth(p-i);

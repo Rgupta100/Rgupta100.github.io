@@ -6,7 +6,7 @@ export const smooth = (value: number) => { const x = clamp(value); return x * x 
 export function storyProgress(scrollY: number, tops: readonly number[], viewport: number): number {
   let progress = 0;
   for (let i = 1; i < tops.length; i++) {
-    const start = tops[i] - viewport * .76;
+    const start = Math.max(tops[i-1] + viewport * .4, tops[i] - viewport * 1.1);
     const end = tops[i] - viewport * .16;
     if (scrollY >= end) progress = i;
     else if (scrollY > start) { progress = i - 1 + smooth((scrollY - start) / (end - start)); break; }

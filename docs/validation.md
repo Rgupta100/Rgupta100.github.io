@@ -48,3 +48,10 @@
 - Final Astro check: 14 files, zero errors/warnings/hints. Static build and all nine tests pass. Existing lazy Three.js chunk-size advisory remains; physical-device performance not measured.
 - Checked 24 local HTML references/anchors across two built pages. Deployment archive release/portfolio-site.zip is 2,029,286 bytes; SHA-256 stored in release/build-manifest.json.
 - Website, Blender sources and GitHub Pages workflow complete. No push, publication or deployment performed.
+
+## Orbital revision — 23 September 2026
+- Supersedes the preceding cryostat/thermal design. Thermal and scan code removed; central orbital sculpture and alternating content composition implemented.
+- Source reopened and exported GLB imported independently: 14 assemblies, 26 meshes, 22,648 triangles; GLB 634,968 bytes. Ten fallback images each below 68 KB.
+- Browser reports 26 draw calls and 22,648 triangles, compared with the earlier approximately 190 calls and 214,356 triangles. Real-time shadows removed and DPR capped at 1.25; no measured FPS claim.
+- Play sequence 32 seconds, scatter nine seconds, wider scroll transitions. Desktop and narrow composition reviewed. All nine tests pass, including mesh and triangle budgets. Astro check clean and static build succeeds; existing lazy Three.js chunk-size advisory remains.
+- Source Blender and PNG metadata sanitized; independent publication audit checks revised descriptions and unchanged biography.

@@ -45,7 +45,7 @@ for match in re.finditer(rb'[ -~]{8,}',data):
 assert b'Users\\' not in data and b'/Users/' not in data
 blend.write_bytes(gzip.compress(data,compresslevel=9,mtime=0))
 bpy.ops.wm.open_mainfile(filepath=str(blend))
-assert len([o for o in bpy.data.objects if o.type=='MESH'])==1105
+assert len([o for o in bpy.data.objects if o.type=='MESH'])==json.loads((root/'assembly-manifest.json').read_text())['mesh_objects']
 assert bpy.context.scene.render.filepath=='//overview-transparent.png'
 assert not bpy.context.scene.render.use_stamp_filename
 print(json.dumps({'pngs':png_results,'paths':list(bpy.utils.blend_paths(absolute=False))},indent=2))

@@ -1,41 +1,35 @@
-# Original conceptual cryostat hero
+# Original orbital sculpture
 
-This replacement is an original visual illustration inspired by the multi-tier dilution-refrigerator architecture shown in [IBM's cryogenic systems article](https://www.ibm.com/quantum/blog/modular-cryogenics). It is not an IBM model, an operational cryostat design, or a claim that Raghav designed quantum hardware. No reference images, brands, textures, or labels are embedded.
+An original abstract sculpture for the portfolio: a heavy incomplete titanium C-yoke, three unequal swept armor segments, a split inner rotor, and a faceted graphite core with a narrow amber aperture. It is artistic geometry, with no claim of scientific function or manufactured hardware.
 
 ## Build and validate
 
 ```powershell
 & 'C:/Program Files/Blender Foundation/Blender 5.2/blender.exe' --background --factory-startup --python scripts/build_sculpture.py
 & 'C:/Program Files/Blender Foundation/Blender 5.2/blender.exe' --background --factory-startup --python scripts/validate_sculpture.py
+& 'C:/Program Files/Blender Foundation/Blender 5.2/blender.exe' --background --factory-startup --python assets/blender/sanitize_metadata.py
 ```
 
-Blender 5.2.1 LTS was used. System Python/Pillow performs format-only PNG-to-WebP conversion and mobile resizing. No Blender add-ons, downloaded assets, network services or credentials are needed. `-- --preview-pair` exports the complete model and renders assembled/exploded evidence; `-- --overview-only` renders the first composition; `-- --no-render` builds the editable source and exported asset only.
+Blender 5.2.1 LTS was used. System Python/Pillow converts PNG renders to WebP and resizes the mobile variants. No downloaded assets, add-ons, API keys or external services are required. Add `-- --preview-pair` to render overview and scatter only, or `-- --no-render` to build source and GLB without images.
 
-## Construction
+## Geometry and motion
 
-Five circular gold thermal plates decrease in diameter down a vertical chandelier. Each has a beveled nickel rim, concentric toolpath detail, inner aperture,24 recessed perimeter fasteners and16 feedthroughs. Four levels each have32 individual curved coax lines with hex connectors/ferrules, six larger copper service loops, and six metal support rods with locking collars. An asymmetric finned refrigeration spine and six-strand copper thermal straps supply another level of structural detail. Three upper manifolds and a layered lower dark processor enclosure complete the assembly.
+The sculpture has 14 meaningful moving assemblies and 26 meshes. Curved solids have variable widths, real thickness, beveled edges and distinct depths. Sparse terminal inserts and a diagonal rear bridge provide precision details. Metallic titanium, graphite, polished silver and amber emission use export-compatible Principled materials.
 
-Geometry is actual mesh, including cables, fasteners, rims and fine connectors. Repeated hardware shares mesh datablocks and glTF mesh definitions. Unique cable meshes are joined within their animated family and material, reducing objects without changing visible geometry. GPU-instancing export remains disabled because Blender 5.2.1 produced invalid animation-node references in that mode. The validator rejects invalid child/animation node indices. Static children can be batched by the browser beneath their respective animated parent; no mesh is itself an animation target.
+One `Story` animation lasts exactly 8 seconds. Chapter times are 0, 2, 4, 6 and 8 seconds: assembled, partly open, scattered, partly regrouped, assembled. Each assembly uses its own local pivot and staggered transform action. The compatibility roots remain `outer_frame`, `middle_frame`, `inner_frame`, and `core`. All animated children have `assembly_` names. Mesh children have no animation channels, so browser batching may preserve animated parents. Blender GPU-instancing export is deliberately disabled due to invalid animation node references observed in that exporter mode.
 
-## Browser contract
+The browser owns playback speed and camera choreography; it scrubs one clip rather than running independent autoplay. Blender Z maps to browser Y; the sculpture faces Blender negative Y / browser positive Z. Bounds in browser XYZ are 4.168 × 4.532 × 1.708 assembled and 9.227 × 7.417 × 4.110 scattered. Exact chapter bounds are in `pose-bounds.json`. The source square-render camera corresponds to browser (3,3,10), with orthographic view heights 5.8 / 6.7 / 10.8 / 8.5 / 5.8. Browser lighting is recreated separately.
 
-- `public/models/portfolio.glb`, editable `assets/blender/portfolio.blend`.
-- One `Story` clip runs exactly8seconds; chapter times0/2/4/6/8.
-- Compatibility roots remain `outer_frame`, `middle_frame`, `inner_frame`, `core`. Beneath them, 38 `assembly_*` empties animate five plates, 16 radial cable/connector sectors, eight support clusters, three cooling-spine sections, three manifolds and three processor components.
-- Each family has a local spatial pivot and staggered transform action. Plates initiate the motion; manifolds, cables, supports, cooling and processor parts follow. There are short pauses at partial and full extension, a partial-regroup phase, then staged reassembly. The Blender exporter merges active actions into the single `Story` clip rather than repeatedly baking NLA tracks.
-- Poses: assembled overview; partial extension; an asymmetric constellation across the page; partial regroup; reassembly. Plates occupy distinct lateral/depth positions with modest, varied three-axis rotations. Cable sectors, supports, cooling and processor components move into individually authored irregular clusters rather than maintaining a cylinder or uniform grid. Connectors intentionally disengage during illustrative disassembly. Overview/contact preserve the original assembled geometry, verified within 0.00001 scene units.
-- Blender Z maps to browser Y. Assembled bounds are approximately 3.12×5.07×3.12; full scatter is 13.58×6.65×4.70; partial regroup is 8.49×5.92×4.24. Exact conservative bounds are in `assets/blender/pose-bounds.json`. Source square-image camera direction remains `(6,5,10)`, with view heights 6.3 assembled, 8.5 partial, 14.0 scattered, 11.0 regrouped. The browser uses its own perspective choreography and full-width framing.
-- `Amber signal` remains the interaction material. Standard PBR metals export directly. Studio lights are recreated by the browser rather than embedded in GLB.
-- Five transparent desktop1000×1000 WebPs and mobile700×700 WebPs remain at the existing chapter filenames. Full-resolution PNG masters are in `assets/blender`.
+## Delivered artifacts and checks
 
-## Evidence and archive
+- `public/models/portfolio.glb`: 634,968 bytes; 22,648 triangles; 26 meshes; 28 animation channels.
+- `assets/blender/portfolio.blend`: 491,226 bytes; editable source with complete geometry, materials, lights, camera and animation.
+- `public/images/{overview,experience,projects,skills,contact}-{desktop,mobile}.webp`: five 1000-pixel desktop and five 700-pixel mobile stills. All ten are below 68 KB; overview desktop is 66,268 bytes.
+- `assets/blender/*-transparent.png`, `storyboard.png`, front/rear evidence and four transition frames.
+- `assembly-manifest.json`, `pose-bounds.json`, and `validation.json` record the actual asset contract and checks.
 
-Final measured outputs: GLB 1,594,532 bytes; editable Blender 1,091,232 bytes; 1,105 mesh objects after cable joins; 214,356 rendered triangles. The animation has 80 channels targeting 38 subassemblies plus four compatibility roots. Overview WebP is 88,072 bytes desktop and 62,682 bytes mobile; all ten fallbacks are below 110 KB each.
+Validation reopens the source, freshly imports the GLB, checks valid node indices, verifies exact clip duration and mesh counts, samples nine transform frames, and enforces geometry and payload budgets. It does not constitute a collision solver. The prior cryostat is preserved locally in ignored `assets/blender/previous-cryostat`; earlier experiments also remain in ignored previous-* directories.
 
-`assembly-manifest.json` records the 38 families, original part membership and assembly-preservation error. `validation.json` records source reopen, fresh GLB import, source/import mesh agreement, the original 128 coax lines and five plates, clip duration, size and materials. Validation also checks all 38 families are animation targets, no static mesh is targeted, all child/animation indices are valid, and the explosion fits the agreed bounds. Four transition renders plus front/rear evidence supplement five chapter views. These checks do not certify a functional machine or constitute a collision solver.
+## Portable publication metadata
 
-Local-only archives (excluded from Git): the earlier nested-frame builder, source `.blend`, GLB, documentation, validator and storyboard are preserved in `assets/blender/previous-frames` in the authoring workspace. The archived builder expects its original repository-relative location if restored and rerun.
-
-In that local workspace, the earlier four-module cryostat animation is preserved in `assets/blender/previous-four-module-animation`; the symmetric 38-family explosion is preserved in `assets/blender/previous-axial-family-animation`.
-
-Publication metadata: all 13 current PNGs have no text chunks; their compressed pixel data was preserved byte-for-byte. Source stamp fields are disabled and render output is relative. The source was reopened after removing stale file-browser personal-path bytes and portable gzip compression. Run assets/blender/sanitize_metadata.py with Blender after rebuilding source artifacts.
+Render stamp fields are disabled. The source render path is relative. `sanitize_metadata.py` removes PNG text chunks while preserving compressed IDAT pixel data exactly, clears obsolete personal directory bytes from Blender file-browser state, and verifies the sanitized source reopens. Run it after regeneration. No local personal paths or historical variants belong in published assets.
