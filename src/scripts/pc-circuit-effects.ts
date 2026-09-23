@@ -115,14 +115,25 @@ export function installCircuitEffects() {
     if (!enabled() || !start || start.id !== event.pointerId || Math.hypot(event.clientX - start.x, event.clientY - start.y) > 8 || protectedTarget(event.target)) return;
     const origin = {x: event.clientX, y: event.clientY}, born = performance.now();
     const pulse: Pulse = {branches: [], born};
-    for (let branch = 0; branch < 6; branch++) {
-      const angle = branch * Math.PI / 3, length = 40 + branch % 3 * 13;
-      const first = {x: origin.x + Math.cos(angle) * length, y: origin.y + Math.sin(angle) * length};
-      const turn = angle + (branch % 2 ? 1 : -1) * Math.PI / 4;
-      const second = {x: first.x + Math.cos(turn) * 35, y: first.y + Math.sin(turn) * 35};
-      const end = {x: second.x + Math.cos(angle) * 24, y: second.y + Math.sin(angle) * 24};
-      pulse.branches.push({points: [origin, first, second, end], born});
-      pulse.branches.push({points: [first, {x: first.x + Math.cos(turn - Math.PI / 2) * 19, y: first.y + Math.sin(turn - Math.PI / 2) * 19}], born: born + 90});
+    const branchCount = 3 + Math.floor(Math.random() * 6);
+    const rotation = Math.random() * Math.PI * 2;
+    for (let branch = 0; branch < branchCount; branch++) {
+      let angle = rotation + branch * Math.PI * 2 / branchCount + (Math.random() - .5) * .5;
+      const points: Point[] = [origin];
+      const segments = 2 + Math.floor(Math.random() * 4);
+      for (let segment = 0; segment < segments; segment++) {
+        const start = points[points.length - 1];
+        const length = 14 + Math.random() * (segment === 0 ? 65 : 40);
+        const end = {x: start.x + Math.cos(angle) * length, y: start.y + Math.sin(angle) * length};
+        points.push(end);
+        if (segment > 0 && Math.random() > .45) {
+          const fork = angle + (Math.random() > .5 ? 1 : -1) * Math.PI / 2;
+          const reach = 10 + Math.random() * 28;
+          pulse.branches.push({points: [start, {x: start.x + Math.cos(fork) * reach, y: start.y + Math.sin(fork) * reach}], born: born + segment * 60});
+        }
+        angle += (Math.random() > .5 ? 1 : -1) * Math.PI / 4;
+      }
+      pulse.branches.push({points, born: born + Math.random() * 100});
     }
     // Active animation has a cap; the oldest complete pattern is retained before eviction.
     if (pulses.length >= 8) bake(pulses.shift()!);

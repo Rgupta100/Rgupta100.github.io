@@ -6,7 +6,7 @@ import { loadPCAsset } from './pc-asset';
 import { pcRippleEnvelope } from './pc-ripple';
 
 export type PCLighting = 'rgb' | 'studio' | 'off';
-export type PCSceneState = { progress: number; inspection: boolean; lighting: PCLighting; fanOverride: boolean | null; glassClear: boolean };
+export type PCSceneState = { progress: number; inspection: boolean; lighting: PCLighting; fanOverride: boolean | null; glassClarity: number };
 export type PCScene = {
   setState(state: PCSceneState): void;
   resize(): void;
@@ -78,7 +78,7 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
   groundLight.position.set(-.6, .9, .35); groundLight.target.position.set(-.25, 0, .1);
   scene.add(groundLight, groundLight.target);
 
-  let state: PCSceneState = {progress: 0, inspection: false, lighting: 'rgb', fanOverride: null, glassClear: false};
+  let state: PCSceneState = {progress: 0, inspection: false, lighting: 'rgb', fanOverride: null, glassClarity: 1};
   let model: THREE.Group | undefined;
   let mixer: THREE.AnimationMixer | undefined, action: THREE.AnimationAction | undefined;
   let duration = 16, frame = 0, disposed = false, visible = true, last = 0, elapsed = 0, frames = 0;
@@ -87,8 +87,8 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
   let peakDrawCalls = 0, peakTriangles = 0, renderTotalMs = 0, renderPeakMs = 0;
   const rotors: {object: THREE.Object3D; axis: THREE.Vector3; base: THREE.Quaternion; speed: number}[] = [];
   const leds: {material: THREE.MeshStandardMaterial; color: THREE.Color; emissive: THREE.Color; intensity: number; cpu: boolean}[] = [];
-  const glassMaterials: {material: THREE.MeshStandardMaterial; opacity: number}[] = [];
-  let glassAmount = 0;
+  const glassMaterials: THREE.MeshPhysicalMaterial[] = [];
+  let glassAmount = 1;
   const packetClock = {value: -1};
   let packetStarted = -Infinity;
   let packetCount = 0;
@@ -162,6 +162,39 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
       part.wrapper.parent!.worldToLocal(part.center);
     }
   }
+  const boardPoint = new THREE.Vector3();
+  // Bounds come from the authored components before export batching (Blender Y/Z).
+  const boardRegions: [number, number, number, number, string][] = [
+    [.066,.351,.020,.020,'Processor (CPU) · Executes instructions and processes data'],
+    [.066,.351,.039,.041,'CPU socket · Holds the processor and its electrical contacts'],
+    [-.015,.354,.023,.077,'DIMM slots · Connections for the memory modules'],
+    [-.058,.347,.009,.039,'24-pin ATX connector · Main motherboard power'],
+    [.173,.362,.020,.082,'Rear I/O · External peripheral connections'],
+    [.074,.429,.065,.019,'VRM heatsink · Cools the power-delivery circuitry'],
+    [.137,.350,.010,.060,'VRM heatsink · Cools the power-delivery circuitry'],
+    [.055,.405,.050,.009,'VRM chokes · Smooth the processor power supply'],
+    [.055,.386,.050,.013,'Power MOSFETs · Switch power for the processor'],
+    [.112,.338,.008,.034,'VRM chokes · Smooth the processor power supply'],
+    [.051,.258,.051,.009,'PCIe x16 slot · High-bandwidth expansion connection'],
+    [.081,.186,.052,.012,'M.2 heatsink · Dissipates heat from solid-state storage'],
+    [.081,.242,.052,.012,'M.2 heatsink · Dissipates heat from solid-state storage'],
+    [-.046,.192,.014,.021,'SATA connectors · Connections for storage drives'],
+    [.063,.172,.052,.006,'PCIe expansion slot · Connects add-in cards'],
+    [.063,.197,.052,.006,'PCIe expansion slot · Connects add-in cards'],
+    [.063,.225,.052,.006,'PCIe expansion slot · Connects add-in cards'],
+  ];
+  const capacitors = [[.123,.421],[.111,.421],[.098,.421],[.123,.275],[.111,.275],[-.043,.269],[-.042,.251],[.083,.296],[.095,.296],[.107,.296],[.128,.377],[.128,.390],[.128,.403]];
+  const controllers = [[.020,.229,.020,.0165],[.107,.227,.0125,.009],[-.036,.203,.0075,.0085],[.142,.195,.0085,.009],[.006,.291,.011,.009],[.084,.274,.0135,.0105],[.119,.239,.013,.0145],[-.030,.220,.0085,.0095]];
+  function motherboardLabel(board: THREE.Object3D, point: THREE.Vector3) {
+    boardPoint.copy(point); board.worldToLocal(boardPoint);
+    const y = .061 - boardPoint.z, z = .301 + boardPoint.y;
+    if (capacitors.some(([cy,cz]) => Math.hypot(y-cy,z-cz) < .0045)) return 'Capacitor · Stabilizes voltage and filters electrical noise';
+    for (const [cy,cz,wy,hz,label] of boardRegions) if (Math.abs(y-cy) < wy && Math.abs(z-cz) < hz) return label;
+    if (controllers.some(([cy,cz,wy,hz]) => Math.abs(y-cy) < wy && Math.abs(z-cz) < hz)) return 'Controller IC · Manages board functions and signals';
+    if ([-.048,.070,.172].some(cy => [.160,.295,.442].some(cz => Math.hypot(y-cy,z-cz) < .004))) return 'Mounting screw · Secures the motherboard to its standoff';
+    if (z < .202 && y > -.052 && y < .038) return 'Surface-mount resistors · Small components that regulate current';
+    return 'Motherboard PCB · Copper traces connect the components';
+  }
   function pointerMove(event: PointerEvent) {
     // Embedded browsers can report coarse/no-hover media despite receiving real mouse events.
     if (!['mouse', 'pen'].includes(event.pointerType) || !visible || document.hidden || disposed || poseDirty
@@ -177,7 +210,7 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
     if (next !== hoveredPart) { hoveredPart = next; request(); }
     partLabel.hidden = !next;
     if (next) {
-      partLabel.textContent = next.label;
+      partLabel.textContent = next.name === 'motherboard' && hit ? motherboardLabel(next.object, hit.point) : next.label;
       partLabel.style.left = `${Math.max(12, Math.min(event.clientX + 18, innerWidth - partLabel.offsetWidth - 12))}px`;
       partLabel.style.top = `${Math.max(12, Math.min(event.clientY + 18, innerHeight - partLabel.offsetHeight - 12))}px`;
     }
@@ -185,7 +218,7 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
   function animateHover(dt: number) {
     let moving = false;
     for (const part of hoverParts) {
-      const goal = part === hoveredPart ? 1 : 0;
+      const goal = part === hoveredPart && !(part.name === 'motherboard' && state.progress > .65 && state.progress < .85) ? 1 : 0;
       part.amount += (goal - part.amount) * (1 - Math.exp(-dt * 12));
       if (Math.abs(goal - part.amount) < .001) part.amount = goal;
       const scale = 1 + .08 * part.amount;
@@ -306,11 +339,15 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
       rotor.object.quaternion.copy(rotor.base).multiply(rotorRotation);
     }
     const hoverMoving = animateHover(dt);
-    const glassGoal = state.glassClear ? 1 : 0;
+    const glassGoal = clamp(state.glassClarity);
     glassAmount += (glassGoal - glassAmount) * (1 - Math.exp(-dt * 12));
     if (Math.abs(glassGoal - glassAmount) < .001) glassAmount = glassGoal;
     const glassMoving = glassAmount !== glassGoal;
-    for (const {material, opacity} of glassMaterials) material.opacity = opacity + (Math.min(.035, opacity) - opacity) * glassAmount;
+    for (const material of glassMaterials) {
+      material.roughness = .04 + (1 - glassAmount) * .76;
+      material.transmission = .98;
+      material.opacity = 1 - .94 * glassAmount ** 3;
+    }
     if (hoverMoving) renderer.shadowMap.needsUpdate = true;
     const renderStart = diagnostic ? performance.now() : 0;
     try { renderer.render(scene, camera); }
@@ -338,8 +375,8 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
       canvas.dataset.elapsed = elapsed.toFixed(2);
       canvas.dataset.lighting = state.lighting;
       canvas.dataset.ledColors = leds.map(({material}) => `${material.name}:${material.emissive.getHexString()}:${material.emissiveIntensity.toFixed(2)}`).join(',');
-      canvas.dataset.glassClear = String(state.glassClear);
-      canvas.dataset.glassOpacity = glassMaterials.map(({material}) => `${material.name}:${material.opacity.toFixed(4)}`).join(',');
+      canvas.dataset.glassClarity = state.glassClarity.toFixed(2);
+      canvas.dataset.glassOpacity = glassMaterials.map(material => `${material.name}:${material.roughness.toFixed(4)}`).join(',');
       canvas.dataset.rippleProgress = Number.isFinite(rippleStarted) ? clamp((elapsed - rippleStarted) / 2).toFixed(3) : '0';
       canvas.dataset.rippleCount = String(rippleCount);
       canvas.dataset.ripplePart = ripplePart;
@@ -435,7 +472,7 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
       for (const material of materials) {
         if (!(material instanceof THREE.MeshStandardMaterial) || seen.has(material)) continue;
         seen.add(material);
-        if (material.transparent && /glass|glazing/i.test(material.name)) glassMaterials.push({material, opacity: material.opacity});
+
         switch (material.name) {
           case 'painted_black_steel':
             material.color.set('#101215'); material.metalness = .25; material.roughness = .52; material.envMapIntensity = .28; break;
@@ -459,6 +496,22 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
         }
         if (material.name.startsWith('led_')) leds.push({material, color: material.color.clone(), emissive: material.emissive.clone(), intensity: material.emissiveIntensity, cpu: /cpu|status/.test(material.name)});
       }
+    });
+    // Transmission with roughness gives the slider actual frosted refraction.
+    const glazing = new Map<THREE.Material, THREE.MeshPhysicalMaterial>();
+    model.traverse(object => {
+      if (!(object instanceof THREE.Mesh)) return;
+      const convert = (source: THREE.Material) => {
+        if (source.name !== 'smoked_glass') return source;
+        if (!glazing.has(source)) {
+          const material = new THREE.MeshPhysicalMaterial({color: '#e2e6e5', roughness: .04,
+            metalness: 0, transmission: .98, thickness: .012, ior: 1.45,
+            transparent: true, opacity: 1, depthWrite: false, side: THREE.DoubleSide});
+          material.name = source.name; glazing.set(source, material); glassMaterials.push(material);
+        }
+        return glazing.get(source)!;
+      };
+      object.material = Array.isArray(object.material) ? object.material.map(convert) : convert(object.material);
     });
     // Follow the four authored 45-degree bus corridors in the PCB texture.
     // Clone only the board material, so GPU/memory soldermask stays untouched.

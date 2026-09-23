@@ -16,7 +16,7 @@ const view = document.querySelector<HTMLSelectElement>('#pc-view')!;
 const play = document.querySelector<HTMLButtonElement>('#pc-play')!;
 const fans = document.querySelector<HTMLButtonElement>('#pc-fans')!;
 const lighting = document.querySelector<HTMLSelectElement>('#pc-lighting')!;
-const glass = document.querySelector<HTMLButtonElement>('#pc-glass')!;
+const glass = document.querySelector<HTMLInputElement>('#pc-glass')!;
 const returnButton = document.querySelector<HTMLButtonElement>('#pc-return')!;
 const motionButton = document.querySelector<HTMLButtonElement>('#pc-motion')!;
 const status = document.querySelector<HTMLElement>('#pc-control-status')!;
@@ -25,7 +25,7 @@ const desktop = matchMedia('(min-width: 1000px)');
 const fine = matchMedia('(hover: hover) and (pointer: fine)');
 const sections = pcChapters.map(id => document.getElementById(id)!);
 const markerElements = [...document.querySelectorAll<HTMLElement>('[data-story]')];
-const state: PCSceneState = {progress: 0, inspection: false, lighting: 'rgb', fanOverride: true, glassClear: false};
+const state: PCSceneState = {progress: 0, inspection: false, lighting: 'rgb', fanOverride: true, glassClarity: 1};
 let userOff = false;
 try { userOff = localStorage.getItem('portfolio-motion') === 'off'; } catch { /* Storage is optional. */ }
 let scene: PCScene | undefined;
@@ -183,11 +183,11 @@ fans.addEventListener('click', () => {
   renderState(); status.textContent = state.fanOverride ? 'Fans running while the computer is visible.' : 'Fans slowing to a stop.';
 });
 lighting.addEventListener('change', () => { state.lighting = lighting.value as PCLighting; renderState(); });
-glass.addEventListener('click', () => {
-  state.glassClear = !state.glassClear;
-  glass.querySelector('small')!.textContent = state.glassClear ? 'Glass is clear' : 'Clear the glass';
-  glass.setAttribute('aria-pressed', String(state.glassClear));
-  renderState(); status.textContent = state.glassClear ? 'Glass clearing to reveal internal components.' : 'Tinted glass restored.';
+glass.addEventListener('input', () => {
+  state.glassClarity = Number(glass.value) / 100;
+  document.querySelector('#pc-glass-value')!.textContent = `${glass.value}% clear`;
+  glass.setAttribute('aria-valuetext', `${glass.value} percent clear`);
+  renderState();
 });
 returnButton.addEventListener('click', () => { returnToReading(); explore.querySelector('summary')?.focus({preventScroll: true}); });
 motionButton.addEventListener('click', () => {
