@@ -2,6 +2,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { pcActiveChapter, pcChapters, pcStoryProgress, type StoryMarker } from './pc-story';
 import type { PCLighting, PCScene, PCSceneState } from './pc-scene';
+import { installCircuitEffects } from './pc-circuit-effects';
 
 gsap.registerPlugin(ScrollTrigger);
 const root = document.documentElement;
@@ -22,19 +23,26 @@ const desktop = matchMedia('(min-width: 1000px)');
 const fine = matchMedia('(hover: hover) and (pointer: fine)');
 const sections = pcChapters.map(id => document.getElementById(id)!);
 const markerElements = [...document.querySelectorAll<HTMLElement>('[data-story]')];
-const state: PCSceneState = {progress: 0, inspection: false, lighting: 'rgb', fanOverride: null};
+const state: PCSceneState = {progress: 0, inspection: false, lighting: 'rgb', fanOverride: true};
 let userOff = false;
 try { userOff = localStorage.getItem('portfolio-motion') === 'off'; } catch { /* Storage is optional. */ }
 let scene: PCScene | undefined;
 let generation = 0, loading = false, failed = false, scheduled = 0, previousChapter = -1;
 let markers: StoryMarker[] = [], tops: number[] = [], scrollProgress = 0, stageVisible = true;
 let sequence: gsap.core.Tween | undefined;
+let catchup: gsap.core.Tween | undefined;
 let playing = false;
 const motionEnabled = () => !userOff && !reduced.matches;
 
 function showGraphics(ready: boolean) {
+  // Loading or disabling 3D adds/removes the opening travel. Keep a restored
+  // chapter at the same reading position across that one layout change.
+  const chapter = sections.find(section => section.id === location.hash.slice(1));
+  const before = chapter?.getBoundingClientRect().top;
+  const anchored = chapter && chapter.id !== 'overview' && before !== undefined && Math.abs(before - 108) < 140;
   stage.classList.toggle('is-ready', ready);
   root.dataset.pcGraphics = ready ? 'ready' : 'fallback';
+  if (anchored) scrollBy({top: chapter.getBoundingClientRect().top - before, behavior: 'instant'});
   requestAnimationFrame(measure);
 }
 
@@ -47,6 +55,7 @@ function renderState() {
   if (import.meta.env.DEV) stage.dataset.story = state.progress.toFixed(5);
 }
 function setInspection(active: boolean) {
+  catchup?.kill(); catchup = undefined;
   state.inspection = active; root.classList.toggle('pc-inspecting', active);
   main.inert = active; returnButton.hidden = !active;
   if (!active && !desktop.matches) explore.open = false;
@@ -64,12 +73,20 @@ function syncPoster(active: number) {
   poster.src = `/images/pc-19/${id}-desktop.webp`;
   stage.querySelector<HTMLSourceElement>('source')!.srcset = '/images/pc-19/overview-mobile.webp';
 }
-function sync() {
+function sync(immediate = true) {
   scheduled = 0;
   const next = pcStoryProgress(scrollY, markers, innerHeight);
   if (Math.abs(next - scrollProgress) > .00025) scene?.burst();
   scrollProgress = next;
-  if (!state.inspection) state.progress = next;
+  if (!state.inspection) {
+    catchup?.kill(); catchup = undefined;
+    if (!immediate && scene && motionEnabled() && stageVisible && Math.abs(next - state.progress) > .0001) {
+      // Scroll travel supplies the slow choreography; this short catch-up only
+      // removes wheel steps. Navigation/restoration always samples exactly.
+      catchup = gsap.to(state, {progress: next, duration: .24, ease: 'power2.out',
+        onUpdate: renderState, onComplete: () => { catchup = undefined; }});
+    } else state.progress = next;
+  }
   const active = pcActiveChapter(scrollY, tops, innerHeight);
   if (active !== previousChapter) {
     previousChapter = active; root.dataset.pcChapter = pcChapters[active]; syncPoster(active);
@@ -83,7 +100,7 @@ function sync() {
   }
   renderState();
 }
-function schedule() { if (!scheduled) scheduled = requestAnimationFrame(sync); }
+function schedule() { if (!scheduled) scheduled = requestAnimationFrame(() => sync(false)); }
 function measure() {
   // Read every rectangle before changing state/styles.
   markers = markerElements.map(element => ({top: element.getBoundingClientRect().top + scrollY, value: Number(element.dataset.story)}));
@@ -153,13 +170,13 @@ play.addEventListener('click', () => {
   if (playing) { stopSequence(); play.textContent = 'Replay sequence'; status.textContent = 'Sequence stopped.'; return; }
   stopSequence(); setInspection(true); state.progress = 0; playing = true; play.textContent = 'Stop sequence';
   scene.burst(); renderState();
-  sequence = gsap.to(state, {progress: 1, duration: 36, ease: 'none', onUpdate: () => { scene?.burst(); renderState(); }, onComplete: () => {
+  sequence = gsap.to(state, {progress: 1, duration: 50, ease: 'none', onUpdate: () => { scene?.burst(); renderState(); }, onComplete: () => {
     playing = false; sequence = undefined; play.textContent = 'Replay sequence'; view.value = '1'; status.textContent = 'Sequence complete.';
   }});
 });
 fans.addEventListener('click', () => {
   state.fanOverride = state.fanOverride === true ? false : true;
-  fans.setAttribute('aria-pressed', String(state.fanOverride)); fans.textContent = state.fanOverride ? 'Pause fans' : 'Keep fans running';
+  fans.textContent = state.fanOverride ? 'Pause fans' : 'Resume fans';
   renderState(); status.textContent = state.fanOverride ? 'Fans running while the computer is visible.' : 'Fans slowing to a stop.';
 });
 lighting.addEventListener('change', () => { state.lighting = lighting.value as PCLighting; renderState(); });
@@ -183,7 +200,7 @@ addEventListener('hashchange', () => { if (state.inspection) returnToReading(); 
 addEventListener('popstate', () => { if (state.inspection) returnToReading(); requestAnimationFrame(measure); });
 addEventListener('pageshow', () => { requestAnimationFrame(measure); });
 document.addEventListener('visibilitychange', () => {
-  if (document.hidden) sequence?.pause();
+  if (document.hidden) { sequence?.pause(); catchup?.kill(); catchup = undefined; }
   else { measure(); if (state.inspection && playing) sequence?.resume(); }
 });
 const observer = new IntersectionObserver(entries => {
@@ -213,4 +230,5 @@ document.querySelectorAll<HTMLElement>('[data-diagram]').forEach(diagram => {
   buttons.forEach(button => button.addEventListener('click', () => select(button.dataset.step!))); select('0');
 });
 
+installCircuitEffects();
 measure(); configure();

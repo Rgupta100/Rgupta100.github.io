@@ -3,6 +3,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { clamp, pcCameraPose, smooth } from './pc-story';
 import { loadPCAsset } from './pc-asset';
+import { pcRippleEnvelope } from './pc-ripple';
 
 export type PCLighting = 'rgb' | 'studio' | 'off';
 export type PCSceneState = { progress: number; inspection: boolean; lighting: PCLighting; fanOverride: boolean | null };
@@ -80,7 +81,8 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
   let model: THREE.Group | undefined;
   let mixer: THREE.AnimationMixer | undefined, action: THREE.AnimationAction | undefined;
   let duration = 16, frame = 0, disposed = false, visible = true, last = 0, elapsed = 0, frames = 0;
-  let fanBurstRemaining = 14, fanSpeed = 0, fanPhase = 0, poseDirty = true, width = 1, height = 1;
+  let lightTimer: ReturnType<typeof setTimeout> | undefined;
+  let fanSpeed = 0, fanPhase = 0, poseDirty = true, width = 1, height = 1;
   let peakDrawCalls = 0, peakTriangles = 0, renderTotalMs = 0, renderPeakMs = 0;
   const rotors: {object: THREE.Object3D; axis: THREE.Vector3; base: THREE.Quaternion; speed: number}[] = [];
   const leds: {material: THREE.MeshStandardMaterial; color: THREE.Color; emissive: THREE.Color; intensity: number; cpu: boolean}[] = [];
@@ -90,15 +92,129 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
   const inspectionCorner = new THREE.Vector3();
   const shade = new THREE.Color();
   const cycleShade = new THREE.Color();
-  const studio = new THREE.Color('#fff1dd'), cyan = new THREE.Color('#08b8dd'), violet = new THREE.Color('#863cde');
+  const rippleShade = new THREE.Color();
+  const ledMeshes = new Map<THREE.Material, THREE.Mesh[]>();
+  const rippleDistances = new Map<THREE.Material, number>();
+  const rippleBounds = new THREE.Box3(), rippleCenter = new THREE.Vector3(), rippleSample = new THREE.Vector3();
+  let rippleStarted = -Infinity, rippleCount = 0, ripplePart = '';
+  let press: {x: number; y: number; scroll: number} | undefined;
+  const blockedTarget = (target: EventTarget | null) => target instanceof Element && !!target.closest('a,button,select,summary,input,textarea,#pc-controls');
+  function pointerDown(event: PointerEvent) {
+    press = event.isPrimary && event.button === 0 && !blockedTarget(event.target)
+      ? {x: event.clientX, y: event.clientY, scroll: window.scrollY} : undefined;
+  }
+  function componentClick(event: MouseEvent) {
+    const start = press; press = undefined;
+    if (!start || !event.isTrusted || event.button !== 0 || !visible || document.hidden || disposed || poseDirty
+      || state.lighting !== 'rgb' || blockedTarget(event.target)
+      || Math.hypot(event.clientX - start.x, event.clientY - start.y) > 7 || Math.abs(window.scrollY - start.scroll) > 4) return;
+    const rect = canvas.getBoundingClientRect();
+    if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) return;
+    pointer.set((event.clientX - rect.left) / rect.width * 2 - 1, -(event.clientY - rect.top) / rect.height * 2 + 1);
+    camera.updateMatrixWorld(); model?.updateMatrixWorld(true);
+    raycaster.setFromCamera(pointer, camera);
+    const hit = raycaster.intersectObjects(hoverMeshes, false)[0];
+    const part = hit && meshParts.get(hit.object); if (!part) return;
+    let farthest = .1;
+    rippleDistances.clear();
+    for (const {material} of leds) {
+      const meshes = ledMeshes.get(material) ?? [];
+      if (!meshes.length) continue;
+      rippleCenter.set(0, 0, 0);
+      for (const mesh of meshes) {
+        rippleBounds.setFromObject(mesh).getCenter(rippleSample); rippleCenter.add(rippleSample);
+      }
+      rippleCenter.divideScalar(meshes.length);
+      const distance = rippleCenter.distanceTo(hit.point);
+      rippleDistances.set(material, distance); farthest = Math.max(farthest, distance);
+    }
+    for (const [material, distance] of rippleDistances) rippleDistances.set(material, distance / farthest);
+    rippleStarted = elapsed; rippleCount++; ripplePart = part.name; request();
+  }
+  type HoverSurface = {material: THREE.MeshStandardMaterial; emissive: THREE.Color; intensity: number};
+  type HoverPart = {name: string; label: string; object: THREE.Object3D; wrapper: THREE.Group; center: THREE.Vector3; amount: number; surfaces: HoverSurface[]};
+  const replacedMaterials = new Set<THREE.Material>();
+  const hoverTint = new THREE.Color('#39dbe8').multiplyScalar(.14);
+  const partLabel = document.createElement('span');
+  partLabel.id = 'pc-part-label'; partLabel.setAttribute('aria-hidden', 'true'); partLabel.hidden = true;
+  document.body.append(partLabel);
+  const hoverParts: HoverPart[] = [];
+  const hoverMeshes: THREE.Mesh[] = [];
+  const meshParts = new Map<THREE.Object3D, HoverPart>();
+  const raycaster = new THREE.Raycaster(), pointer = new THREE.Vector2();
+  const hoverBounds = new THREE.Box3();
+  let hoveredPart: HoverPart | undefined;
+  function clearHover() { hoveredPart = undefined; partLabel.hidden = true; request(); }
+  function paintHover(part: HoverPart) {
+    for (const surface of part.surfaces) {
+      if (part.amount === 0) {
+        surface.material.emissive.copy(surface.emissive);
+        surface.material.emissiveIntensity = surface.intensity;
+      } else {
+        // Interpolate emitted energy itself so the highlight never flares mid-transition.
+        surface.material.emissive.copy(surface.emissive).multiplyScalar(surface.intensity).lerp(hoverTint, part.amount);
+        surface.material.emissiveIntensity = 1;
+      }
+    }
+  }
+  function resetHoverPose() {
+    hoveredPart = undefined; partLabel.hidden = true;
+    for (const part of hoverParts) {
+      part.amount = 0; part.wrapper.scale.setScalar(1); part.wrapper.position.set(0, 0, 0); paintHover(part);
+    }
+  }
+  function updateHoverCenters() {
+    if (!model) return;
+    model.updateMatrixWorld(true);
+    for (const part of hoverParts) {
+      hoverBounds.setFromObject(part.object).getCenter(part.center);
+      part.wrapper.parent!.worldToLocal(part.center);
+    }
+  }
+  function pointerMove(event: PointerEvent) {
+    // Embedded browsers can report coarse/no-hover media despite receiving real mouse events.
+    if (!['mouse', 'pen'].includes(event.pointerType) || !visible || document.hidden || disposed || poseDirty
+      || (event.target instanceof Element && event.target.closest('a,button,select,summary,#pc-controls'))) { clearHover(); return; }
+    const rect = canvas.getBoundingClientRect();
+    if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) { clearHover(); return; }
+    pointer.set((event.clientX - rect.left) / rect.width * 2 - 1, -(event.clientY - rect.top) / rect.height * 2 + 1);
+    camera.updateMatrixWorld(); model?.updateMatrixWorld(true);
+    raycaster.setFromCamera(pointer, camera);
+    // Only opaque hardware participates: glass never hides the components behind it.
+    const hit = raycaster.intersectObjects(hoverMeshes, false)[0];
+    const next = hit ? meshParts.get(hit.object) : undefined;
+    if (next !== hoveredPart) { hoveredPart = next; request(); }
+    partLabel.hidden = !next;
+    if (next) {
+      partLabel.textContent = next.label;
+      partLabel.style.left = `${Math.max(12, Math.min(event.clientX + 18, innerWidth - partLabel.offsetWidth - 12))}px`;
+      partLabel.style.top = `${Math.max(12, Math.min(event.clientY + 18, innerHeight - partLabel.offsetHeight - 12))}px`;
+    }
+  }
+  function animateHover(dt: number) {
+    let moving = false;
+    for (const part of hoverParts) {
+      const goal = part === hoveredPart ? 1 : 0;
+      part.amount += (goal - part.amount) * (1 - Math.exp(-dt * 12));
+      if (Math.abs(goal - part.amount) < .001) part.amount = goal;
+      const scale = 1 + .08 * part.amount;
+      part.wrapper.scale.setScalar(scale);
+      part.wrapper.position.copy(part.center).multiplyScalar(1 - scale);
+      paintHover(part);
+      moving ||= part.amount !== goal;
+    }
+    return moving;
+  }
 
-  function request() { if (!frame && !disposed && visible && !document.hidden) frame = requestAnimationFrame(draw); }
+  function request() {
+    if (lightTimer !== undefined) { clearTimeout(lightTimer); lightTimer = undefined; }
+    if (!frame && !disposed && visible && !document.hidden) frame = requestAnimationFrame(draw); }
   function resize() {
     width = Math.max(1, canvas.clientWidth); height = Math.max(1, canvas.clientHeight);
     renderer.setSize(width, height, false); camera.aspect = width / height; camera.updateProjectionMatrix();
     renderer.getDrawingBufferSize(floorUniforms.uStudioResolution.value);
     floorUniforms.uStudioBounded.value = matchMedia('(max-width: 999px)').matches ? 1 : 0;
-    poseDirty = true; request();
+    resetHoverPose(); poseDirty = true; request();
   }
   function applyPose() {
     if (action && mixer) {
@@ -152,39 +268,41 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
     );
     floorUniforms.uStudioVisibility.value = 1 - smooth((p - .64) / .08) * (1 - smooth((p - .78) / .10));
     renderer.shadowMap.needsUpdate = true;
+    updateHoverCenters();
     poseDirty = false;
   }
   function applyLighting() {
-    shade.copy(studio).lerp(cyan, smooth((state.progress - .1) / .18));
-    shade.lerp(violet, smooth((state.progress - .32) / .18));
-    shade.lerp(studio, smooth((state.progress - .58) / .34));
-    // A coordinated eighteen-second color journey accompanies fan activity.
-    // Spatial Story owns the assemblies; this bounded light treatment has no transforms.
-    const phase = (elapsed % 18) / 18;
-    if (phase < 1 / 3) cycleShade.copy(studio).lerp(cyan, smooth(phase * 3));
-    else if (phase < 2 / 3) cycleShade.copy(cyan).lerp(violet, smooth((phase - 1 / 3) * 3));
-    else cycleShade.copy(violet).lerp(studio, smooth((phase - 2 / 3) * 3));
-    const activeColor = fanSpeed * (1 - smooth((state.progress - .87) / .13));
-    shade.lerp(cycleShade, activeColor * .8);
-    leds.forEach(({material, color, emissive, intensity, cpu}) => {
+    // A full-spectrum clock runs independently of scroll and fan controls.
+    const lightColor = (offset: number) => cycleShade.setHSL((elapsed / 18 + offset) % 1, 1, .5);
+    leds.forEach(({material, color, emissive, intensity, cpu}, index) => {
       if (state.lighting === 'off') {
         material.color.copy(color); material.emissiveIntensity = 0;
       } else if (state.lighting === 'studio' || cpu) {
         material.color.copy(color); material.emissive.copy(emissive); material.emissiveIntensity = intensity;
       } else {
+        const offset = material.name === 'led_top_rail' ? 1 / 3 : material.name === 'led_gpu_edge' ? 2 / 3 : index * .09;
+        shade.copy(lightColor(offset));
         material.color.copy(shade).multiplyScalar(material.name === 'led_case_diffuse' ? .09 : .24);
-        material.emissive.copy(shade); material.emissiveIntensity = intensity;
+        material.emissive.copy(shade); material.emissiveIntensity = intensity * 1.4;
+      }
+      if (state.lighting === 'rgb') {
+        const pulse = pcRippleEnvelope(elapsed - rippleStarted, rippleDistances.get(material) ?? 1);
+        if (pulse > 0) {
+          rippleShade.setHSL((elapsed / 18 + .16) % 1, 1, .5);
+          material.emissive.lerp(rippleShade, pulse * .65);
+          material.emissiveIntensity *= 1 + .8 * pulse;
+        }
       }
     });
   }
   function draw(now: number) {
     frame = 0;
     if (disposed || !visible || document.hidden) { last = 0; return; }
-    const dt = last ? Math.min(.05, (now - last) / 1000) : 1 / 60;
-    last = now; elapsed += dt;
+    const clockDelta = last ? Math.min(.15, (now - last) / 1000) : 1 / 60;
+    const dt = Math.min(.05, clockDelta);
+    last = now; elapsed += clockDelta;
     if (poseDirty) applyPose();
-    const requested = state.fanOverride ?? fanBurstRemaining > 0;
-    fanBurstRemaining = Math.max(0, fanBurstRemaining - dt);
+    const requested = state.fanOverride ?? true;
     fanSpeed += ((requested ? 1 : 0) - fanSpeed) * (1 - Math.exp(-dt * (requested ? 1.9 : 1.5)));
     if (fanSpeed < .001) fanSpeed = 0;
     fanPhase += dt * fanSpeed;
@@ -193,6 +311,8 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
       rotorRotation.setFromAxisAngle(rotor.axis, fanPhase * rotor.speed);
       rotor.object.quaternion.copy(rotor.base).multiply(rotorRotation);
     }
+    const hoverMoving = animateHover(dt);
+    if (hoverMoving) renderer.shadowMap.needsUpdate = true;
     const renderStart = diagnostic ? performance.now() : 0;
     try { renderer.render(scene, camera); }
     catch (error) { onFailure(error); return; }
@@ -219,22 +339,43 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
       canvas.dataset.elapsed = elapsed.toFixed(2);
       canvas.dataset.lighting = state.lighting;
       canvas.dataset.ledColors = leds.map(({material}) => `${material.name}:${material.emissive.getHexString()}:${material.emissiveIntensity.toFixed(2)}`).join(',');
+      canvas.dataset.rippleProgress = Number.isFinite(rippleStarted) ? clamp((elapsed - rippleStarted) / 2).toFixed(3) : '0';
+      canvas.dataset.rippleCount = String(rippleCount);
+      canvas.dataset.ripplePart = ripplePart;
+      canvas.dataset.hoveredPart = hoveredPart?.name ?? '';
+      canvas.dataset.hoverAmount = Math.max(0, ...hoverParts.map(part => part.amount)).toFixed(3);
       canvas.dataset.dpr = String(renderer.getPixelRatio());
     }
     canvas.dataset.rendered = 'true';
     if (frames === 1) canvas.dispatchEvent(new CustomEvent('pc-rendered'));
-    if (requested || fanSpeed > 0) request();
-    else last = 0;
+    if (requested || fanSpeed > 0 || hoverMoving || (state.lighting === 'rgb' && elapsed - rippleStarted < 2)) request();
+    else if (state.lighting === 'rgb') {
+      // Color alone needs twelve samples/second, not a continuously busy RAF.
+      lightTimer = setTimeout(() => { lightTimer = undefined; request(); }, 1000 / 12);
+    } else last = 0;
   }
-  const visibility = () => { last = 0; if (document.hidden) { cancelAnimationFrame(frame); frame = 0; } else request(); };
+  const visibility = () => { press = undefined; rippleStarted = -Infinity; resetHoverPose(); last = 0; if (document.hidden) { cancelAnimationFrame(frame); frame = 0; clearTimeout(lightTimer); lightTimer = undefined; } else request(); };
   const lost = (event: Event) => { event.preventDefault(); onFailure(new Error('WebGL context lost')); };
   canvas.addEventListener('webglcontextlost', lost);
   document.addEventListener('visibilitychange', visibility);
+  window.addEventListener('pointermove', pointerMove, {passive: true});
+  window.addEventListener('pointerdown', pointerDown, {passive: true});
+  window.addEventListener('click', componentClick);
+  document.documentElement.addEventListener('pointerleave', clearHover);
+  window.addEventListener('blur', clearHover);
+  window.addEventListener('scroll', clearHover, {passive: true});
 
   function dispose() {
     if (disposed) return;
-    disposed = true; cancelAnimationFrame(frame);
+    partLabel.remove();
+    disposed = true; cancelAnimationFrame(frame); clearTimeout(lightTimer); lightTimer = undefined;
     canvas.removeEventListener('webglcontextlost', lost); document.removeEventListener('visibilitychange', visibility);
+    window.removeEventListener('pointermove', pointerMove);
+    window.removeEventListener('pointerdown', pointerDown);
+    window.removeEventListener('click', componentClick);
+    document.documentElement.removeEventListener('pointerleave', clearHover);
+    window.removeEventListener('blur', clearHover);
+    window.removeEventListener('scroll', clearHover);
     mixer?.stopAllAction(); if (model) mixer?.uncacheRoot(model);
     const geometries = new Set<THREE.BufferGeometry>(), materials = new Set<THREE.Material>(), textures = new Set<THREE.Texture>();
     scene.traverse(object => {
@@ -245,6 +386,7 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
         for (const item of Object.values(material)) if (item instanceof THREE.Texture) textures.add(item);
       }
     });
+    replacedMaterials.forEach(material => materials.add(material));
     geometries.forEach(geometry => geometry.dispose()); materials.forEach(material => material.dispose());
     textures.forEach(texture => { texture.dispose(); if (typeof ImageBitmap !== 'undefined' && texture.image instanceof ImageBitmap) texture.image.close(); });
     environment.dispose(); key.shadow.dispose(); renderer.dispose();
@@ -325,11 +467,57 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
             material.roughness = .56; material.envMapIntensity = .8; break;
           case 'led_case':
             material.emissive.set('#e6edf1'); material.emissiveIntensity = 1.35; break;
+          case 'led_top_rail':
+          case 'led_gpu_edge':
+            material.emissiveIntensity = 1.6; break;
           case 'led_cpu':
             material.color.set('#554127'); material.emissive.set('#ffb84f'); material.emissiveIntensity = .95; break;
         }
         if (material.name.startsWith('led_')) leds.push({material, color: material.color.clone(), emissive: material.emissive.clone(), intensity: material.emissiveIntensity, cpu: /cpu|status/.test(material.name)});
       }
+    });
+    // Identity wrappers leave authored node transforms and Story bindings intact.
+    // GPU layers are separate targets in the exploded pose; no target wraps another.
+    const semanticParts = /^(cpu_block|radiator|motherboard|ram_group|psu|gpu_(backplate|heatsink|pcb|shroud)_group|fan_housing_(front_\d|top_\d|rear))$/;
+    const assemblies: THREE.Object3D[] = [];
+    model.traverse(object => { if (semanticParts.test(object.name)) assemblies.push(object); });
+    for (const object of assemblies) {
+      const parent = object.parent!;
+      const wrapper = new THREE.Group(); wrapper.name = `hover_${object.name}`;
+      parent.add(wrapper); wrapper.add(object);
+      const labels: Record<string, string> = {
+        cpu_block: 'CPU cooling block', radiator: 'Cooling radiator', motherboard: 'Motherboard',
+        ram_group: 'Memory modules', psu: 'Power supply', gpu_backplate_group: 'GPU backplate',
+        gpu_heatsink_group: 'GPU heatsink', gpu_pcb_group: 'GPU circuit board', gpu_shroud_group: 'GPU fans & shroud',
+      };
+      const label = labels[object.name] ?? (object.name.includes('front') ? 'Front cooling fan' : object.name.includes('top') ? 'Top cooling fan' : 'Rear cooling fan');
+      const part: HoverPart = {name: object.name, label, object, wrapper, center: new THREE.Vector3(), amount: 0, surfaces: []};
+      const clonedMaterials = new Map<THREE.Material, THREE.Material>();
+      const hoverMaterial = (original: THREE.Material) => {
+        if (!(original instanceof THREE.MeshStandardMaterial) || /^led_|glass|glazing/i.test(original.name)) return original;
+        const existing = clonedMaterials.get(original); if (existing) return existing;
+        const material = original.clone();
+        clonedMaterials.set(original, material); replacedMaterials.add(original);
+        part.surfaces.push({material, emissive: material.emissive.clone(), intensity: material.emissiveIntensity});
+        return material;
+      };
+      hoverParts.push(part);
+      object.traverse(child => {
+        if (!(child instanceof THREE.Mesh)) return;
+        const materials = Array.isArray(child.material) ? child.material : [child.material];
+        if (materials.every(material => material.transparent && /glass|glazing/i.test(material.name))) return;
+        child.material = Array.isArray(child.material) ? child.material.map(hoverMaterial) : hoverMaterial(child.material);
+        meshParts.set(child, part);
+      });
+    }
+    model.traverse(child => {
+      if (!(child instanceof THREE.Mesh)) return;
+      const materials = Array.isArray(child.material) ? child.material : [child.material];
+      for (const material of materials) if (material.name.startsWith('led_')) {
+        const meshes = ledMeshes.get(material) ?? []; meshes.push(child); ledMeshes.set(material, meshes);
+      }
+      // Solid casework still occludes hidden hardware; only glass is transparent to picking.
+      if (!materials.every(material => material.transparent && /glass|glazing/i.test(material.name))) hoverMeshes.push(child);
     });
     scene.add(model);
     mixer = new THREE.AnimationMixer(model); mixer.timeScale = 1;
@@ -337,10 +525,10 @@ export async function createPCScene(canvas: HTMLCanvasElement, onFailure: (error
     resize();
   } catch (error) { dispose(); throw error; }
   return {
-    setState(next) { if (next.progress !== state.progress || next.inspection !== state.inspection || next.lighting !== state.lighting) poseDirty = true; state = {...next}; request(); },
+    setState(next) { if (next.lighting !== 'rgb') rippleStarted = -Infinity; if (next.progress !== state.progress || next.inspection !== state.inspection || next.lighting !== state.lighting) { resetHoverPose(); poseDirty = true; } state = {...next}; request(); },
     resize,
-    setVisible(next) { visible = next; last = 0; if (!visible) { cancelAnimationFrame(frame); frame = 0; } else request(); },
-    burst() { fanBurstRemaining = 9; request(); },
+    setVisible(next) { if (!next) { press = undefined; rippleStarted = -Infinity; resetHoverPose(); } visible = next; last = 0; if (!visible) { cancelAnimationFrame(frame); frame = 0; clearTimeout(lightTimer); lightTimer = undefined; } else request(); },
+    burst() { request(); },
     dispose,
   };
 }

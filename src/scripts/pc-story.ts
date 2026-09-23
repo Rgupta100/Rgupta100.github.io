@@ -5,13 +5,20 @@ export const clamp = (value: number, min = 0, max = 1) => Math.min(max, Math.max
 export const smooth = (value: number) => { const t = clamp(value); return t * t * (3 - 2 * t); };
 
 export type StoryMarker = { top: number; value: number };
+/** Complete each assembly before its heading; spend up to 1.85 viewports
+ * getting there, reusing the preceding reading section rather than pinning it. */
+export function pcTransitionRange(previous: StoryMarker, next: StoryMarker, height: number) {
+  const end = next.top - height * .13;
+  const start = Math.min(end - 1, Math.max(previous.top + height * .12, next.top - height * 1.98));
+  return {start, end};
+}
+
 /** Absolute document mapping: holds a completed pose throughout its reading region. */
 export function pcStoryProgress(y: number, markers: readonly StoryMarker[], height: number): number {
   let value = 0;
   for (let i = 1; i < markers.length; i++) {
     const previous = markers[i - 1], next = markers[i];
-    const end = next.top - height * .13;
-    const start = Math.min(end - 1, Math.max(previous.top + height * .34, next.top - height * 1.18));
+    const {start, end} = pcTransitionRange(previous, next, height);
     if (y >= end) value = next.value;
     else if (y > start) return previous.value + (next.value - previous.value) * smooth((y - start) / (end - start));
     else break;

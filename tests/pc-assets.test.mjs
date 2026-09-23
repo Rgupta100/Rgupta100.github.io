@@ -100,3 +100,18 @@ test('PC material/export metadata supports RGB without publishing local workstat
   assert.ok(!/(?:[A-Za-z]:[\\/](?:Users|Program Files)|file:\/\/|\/home\/|\/Users\/)/i.test(serialized), 'portable model JSON metadata');
   for (const image of d.images ?? []) assert.ok(!image.uri || !/^(?:https?:|file:|[A-Za-z]:[\\/])/i.test(image.uri), 'textures packed or relative');
 });
+
+test('additional RGB channels illuminate actual long strip geometry', () => {
+  const { document: d } = readGlb();
+  for (const name of ['led_top_rail', 'led_gpu_edge']) {
+    const materialIndex = d.materials.findIndex(material => material.name === name);
+    assert.ok(materialIndex >= 0, `${name}: independent lighting channel`);
+    assert.ok(d.materials[materialIndex].emissiveFactor.some(value => value > 0), `${name}: emissive surface`);
+    const surfaces = d.meshes.flatMap(mesh => mesh.primitives).filter(primitive => primitive.material === materialIndex);
+    assert.ok(surfaces.length > 0, `${name}: attached to exported physical geometry`);
+    assert.ok(surfaces.some(primitive => {
+      const positions = d.accessors[primitive.attributes.POSITION];
+      return positions.count >= 8 && Math.max(...positions.max.map((value, i) => value - positions.min[i])) > .1;
+    }), `${name}: visible strip length rather than a metadata-only light`);
+  }
+});

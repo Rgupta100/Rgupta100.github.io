@@ -5,51 +5,51 @@
     "overview-desktop.webp": {
       "width": 791,
       "height": 891,
-      "bytes": 64870,
+      "bytes": 70528,
       "alpha_range": [
         0,
         255
       ],
       "source": "source-overview-alpha-0.png",
       "source_alpha_bounds": [
-        206,
+        207,
         93,
-        911,
+        912,
         888
       ],
       "crop": [
-        163,
+        164,
         45,
-        954,
+        955,
         936
       ]
     },
     "overview-mobile.webp": {
       "width": 780,
       "height": 879,
-      "bytes": 75018,
+      "bytes": 82104,
       "alpha_range": [
         0,
         255
       ],
       "source": "source-overview-alpha-0.png",
       "source_alpha_bounds": [
-        206,
+        207,
         93,
-        911,
+        912,
         888
       ],
       "crop": [
-        163,
+        164,
         45,
-        954,
+        955,
         936
       ]
     },
     "experience-desktop.webp": {
       "width": 1081,
       "height": 669,
-      "bytes": 100586,
+      "bytes": 108010,
       "alpha_range": [
         0,
         255
@@ -71,7 +71,7 @@
     "experience-mobile.webp": {
       "width": 780,
       "height": 483,
-      "bytes": 72418,
+      "bytes": 80696,
       "alpha_range": [
         0,
         255
@@ -93,7 +93,7 @@
     "projects-desktop.webp": {
       "width": 1206,
       "height": 734,
-      "bytes": 82510,
+      "bytes": 86910,
       "alpha_range": [
         0,
         255
@@ -115,7 +115,7 @@
     "projects-mobile.webp": {
       "width": 780,
       "height": 475,
-      "bytes": 55732,
+      "bytes": 58366,
       "alpha_range": [
         0,
         255
@@ -137,7 +137,7 @@
     "skills-desktop.webp": {
       "width": 1232,
       "height": 1029,
-      "bytes": 71374,
+      "bytes": 72300,
       "alpha_range": [
         0,
         255
@@ -159,7 +159,7 @@
     "skills-mobile.webp": {
       "width": 780,
       "height": 651,
-      "bytes": 46092,
+      "bytes": 47070,
       "alpha_range": [
         0,
         255
@@ -181,44 +181,44 @@
     "contact-desktop.webp": {
       "width": 791,
       "height": 891,
-      "bytes": 64870,
+      "bytes": 70528,
       "alpha_range": [
         0,
         255
       ],
       "source": "source-contact-alpha-480.png",
       "source_alpha_bounds": [
-        206,
+        207,
         93,
-        911,
+        912,
         888
       ],
       "crop": [
-        163,
+        164,
         45,
-        954,
+        955,
         936
       ]
     },
     "contact-mobile.webp": {
       "width": 780,
       "height": 879,
-      "bytes": 75018,
+      "bytes": 82104,
       "alpha_range": [
         0,
         255
       ],
       "source": "source-contact-alpha-480.png",
       "source_alpha_bounds": [
-        206,
+        207,
         93,
-        911,
+        912,
         888
       ],
       "crop": [
-        163,
+        164,
         45,
-        954,
+        955,
         936
       ]
     }
